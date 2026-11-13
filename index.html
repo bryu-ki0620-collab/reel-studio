@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>リールスタジオ — 動画エディター</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1015;--panel:#141c24;--line:#29343e;--muted:#8796a4;--accent:#55e0d1;--text:#e7eef3}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px system-ui,-apple-system,sans-serif;height:100vh;overflow:hidden}button,select,input,textarea{font:inherit}button,select{color:var(--text);background:#202c36;border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}button:hover{background:#30424e;border-color:#60818b}button:disabled{opacity:.35;cursor:default}button.primary{background:var(--accent);color:#092522;border-color:transparent;font-weight:700}button.icon{padding:7px 10px}button.active{color:var(--accent);background:#193837;border-color:#36736b}header{height:66px;display:flex;align-items:center;gap:12px;padding:0 22px;border-bottom:1px solid var(--line);background:#10171e}.brand{font-size:21px;font-weight:800;letter-spacing:-.7px;display:flex;align-items:center;gap:10px}.logo{background:var(--accent);color:#102c2b;border-radius:9px;width:31px;height:31px;display:grid;place-items:center;font-size:19px}.divider{width:1px;height:25px;background:var(--line);margin:0 8px}.spacer{flex:1}.tag{color:var(--muted);font-size:11px}#workspace{display:grid;grid-template-columns:270px minmax(280px,1fr) 280px;height:calc(100vh - 330px);min-height:240px}aside{background:var(--panel);overflow:auto}#left{border-right:1px solid var(--line)}#right{border-left:1px solid var(--line);padding:18px}.tabs{display:flex;padding:13px 9px;border-bottom:1px solid var(--line);gap:3px}.tabs button{border:0;background:transparent;padding:9px 10px;font-size:12px}.tabs button.active{color:var(--accent);background:#21333a}.tabcontent{padding:16px}.hidden{display:none!important}.eyebrow{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:8px}.sectiontitle{font-size:14px;font-weight:650;margin:0 0 17px}.dropzone{border:1px dashed #45616b;background:#17272e;border-radius:12px;padding:24px 10px;text-align:center;line-height:1.9;transition:.2s}.dropzone.over{background:#21534e;border-color:var(--accent)}.dropzone p{font-size:11px;color:var(--muted);margin:8px 0 0}.importicon{font-size:26px;color:var(--accent);margin-bottom:7px}.libraryheader{display:flex;align-items:center;justify-content:space-between;margin:22px 0 10px;color:var(--muted);font-size:11px}.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.media-card{position:relative;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#0d151c;cursor:grab}.media-card:hover{border-color:var(--accent)}.thumb{height:68px;background:#1f2b36;display:grid;place-items:center;overflow:hidden;font-size:27px;color:#7899ac}.thumb img{width:100%;height:100%;object-fit:cover}.media-name{padding:7px;font-size:10px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;padding-right:25px}.add-media{position:absolute;right:4px;bottom:4px;padding:1px 5px;color:var(--accent)}.remove-media{position:absolute;right:3px;top:3px;padding:0 5px;background:#121c27bb;font-size:12px}.presetgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preset{padding:0;overflow:hidden;text-align:left}.preset-art{height:62px;background:linear-gradient(135deg,#1d5a68,#e5aa78 52%,#27465e);display:flex;align-items:end;padding:8px;font-size:23px}.preset span{display:block;padding:9px;font-size:11px}.hint{color:var(--muted);font-size:11px;line-height:1.8}#center{display:flex;flex-direction:column;background:radial-gradient(ellipse at center,#1c2732,#0d141b 80%);min-width:0}.previewtop{display:flex;justify-content:space-between;padding:15px 20px;color:var(--muted);font-size:11px}.canvas-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 30px 8px}canvas{max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 12px 50px #0008;background:#000;border-radius:3px}.transport{height:57px;display:flex;justify-content:center;align-items:center;gap:15px}.transport button{border-radius:50%;width:36px;height:36px;padding:0}.time{font:11px ui-monospace,monospace;color:#b6c4ce;min-width:143px}#right h2{font-size:14px;margin:0 0 20px}.empty-properties{text-align:center;color:var(--muted);padding:45px 12px;line-height:2}.empty-properties b{display:block;font-size:27px;color:#54717f}.prop-group{padding:14px 0;border-bottom:1px solid var(--line)}.prop-group h3{font-size:11px;margin:0 0 13px;color:#b5c5ce}.control{margin:12px 0}.control label{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px;gap:8px}.control output{color:var(--text);font-variant-numeric:tabular-nums}input[type=range]{width:100%;height:4px;accent-color:var(--accent);cursor:pointer}input[type=number],textarea{background:#0e171f;border:1px solid var(--line);border-radius:6px;color:var(--text);padding:7px;width:100%}textarea{resize:vertical;min-height:70px}input[type=color]{height:27px;width:65px;background:#202c36;border:1px solid var(--line);border-radius:4px}#timeline{height:264px;background:#101820;border-top:1px solid var(--line);display:flex;flex-direction:column}.timeline-tools{display:flex;align-items:center;gap:8px;padding:11px 18px;height:55px;border-bottom:1px solid var(--line)}.timeline-tools button{font-size:11px}.zoom{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px}.zoom input{width:110px}.timeline-body{display:flex;flex:1;min-height:0}.tracklabels{width:108px;flex-shrink:0;padding-top:29px;border-right:1px solid var(--line);font-size:11px;color:#97a9b5}.tracklabel{height:49px;padding:17px 14px;border-bottom:1px solid #22303a}#timelineScroll{overflow:auto;flex:1;position:relative}#timelineContent{position:relative;min-height:176px;user-select:none}#ruler{height:29px;position:relative;cursor:crosshair;border-bottom:1px solid var(--line);background:#141e27;touch-action:none}.tick{position:absolute;top:0;height:29px;border-left:1px solid #40515d;color:#8c9ba7;font:10px ui-monospace,monospace;padding:5px 6px;pointer-events:none}.lane{height:49px;border-bottom:1px solid #22303a;position:relative;background:repeating-linear-gradient(90deg,transparent,transparent 79px,#1b2630 80px);touch-action:none}.lane.over{background:#1a393c}.clip{position:absolute;top:6px;height:37px;border-radius:6px;background:#245b68;border:1px solid #448596;overflow:hidden;cursor:grab;touch-action:none;display:flex;align-items:center;min-width:4px}.clip.text{background:#574379;border-color:#8969b0}.clip.audio{background:#285849;border-color:#468c76}.clip.selected{border:2px solid #6af7e2;box-shadow:0 0 0 1px #071c1a}.clip .cliplabel{font-size:10px;padding:0 11px;white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px #000;overflow:hidden;text-overflow:ellipsis}.handle{position:absolute;top:0;bottom:0;width:7px;background:#ffffff1c;cursor:ew-resize;z-index:2}.handle.left{left:0}.handle.right{right:0}.handle:hover{background:#83f5e677}#playhead{position:absolute;top:0;bottom:0;width:1px;background:#5cf0d8;pointer-events:none;z-index:10}#playhead:before{content:'';position:absolute;left:-5px;top:0;width:11px;height:12px;background:#5cf0d8;clip-path:polygon(0 0,100% 0,100% 65%,50% 100%,0 65%)}.statusbar{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;color:#6e8493;font-size:10px;background:#0d141b}.modal-backdrop{position:fixed;inset:0;z-index:50;background:#000b;display:grid;place-items:center;backdrop-filter:blur(7px)}.modal{width:410px;max-width:95vw;background:#18232d;border:1px solid #3b505b;border-radius:18px;padding:28px;box-shadow:0 30px 90px #0008}.modal h2{font-size:20px;margin:0 0 8px}.modal select{width:100%;margin:10px 0 18px}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}progress{width:100%;accent-color:var(--accent);height:9px}#toast{position:fixed;bottom:35px;left:50%;transform:translateX(-50%);background:#27413e;border:1px solid #4f8e81;border-radius:9px;padding:12px 20px;z-index:100;max-width:90%;font-size:12px;pointer-events:none}button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}@media(max-width:1000px){#workspace{grid-template-columns:220px minmax(220px,1fr) 230px}.brand{font-size:17px}.tag{display:none}#right{padding:12px}}@media(max-height:720px){#workspace{height:calc(100vh - 290px)}#timeline{height:224px}.timeline-tools{height:42px;padding:6px 14px}.statusbar{display:none}}@media(max-width:730px){body{overflow:auto;min-width:650px}#workspace{grid-template-columns:180px minmax(220px,1fr) 220px}header{padding:0 12px;gap:6px}.tabs button{padding:8px 5px}}
+/* Preview geometry is independent of canvas intrinsic/export dimensions. */
+body{display:flex;flex-direction:column}header{flex:0 0 66px}#workspace{flex:1 1 0;height:auto;min-height:0;overflow:hidden;grid-template-columns:250px minmax(0,1fr) 260px}#workspace>*{min-height:0;min-width:0}#center{min-height:0;overflow:hidden}.previewtop{flex:0 0 42px;padding:13px 16px}.canvas-wrap{position:relative;flex:1 1 0;min-height:0;min-width:0;overflow:hidden;padding:0;margin:0 14px 8px}canvas{display:block;flex:none;max-width:none;max-height:none;width:0;height:0}.transport{flex:0 0 57px;min-height:57px;gap:8px}.transport button{flex:none}.transport .time{min-width:0;font-size:10px;white-space:nowrap}#timeline{flex:0 0 264px;min-height:0;overflow:hidden}.timeline-tools{flex-shrink:0}.tabs{display:grid;grid-template-columns:1fr 1fr;padding:8px;gap:4px}.tabs button{padding:8px 3px}.caption-options label{display:block;color:var(--muted);font-size:11px;margin:13px 0 6px}.caption-options select,.caption-options input{width:100%}.caption-row{padding:9px 0;border-bottom:1px solid var(--line)}.caption-row button{font:10px ui-monospace,monospace;padding:4px 6px;color:var(--accent);margin-bottom:6px}.caption-row input{width:100%;background:#0e171f;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px}.caption-status{white-space:pre-line;min-height:42px}#captionError{color:#ffbdad;white-space:pre-line}
+@media(max-width:1000px){#workspace{grid-template-columns:200px minmax(0,1fr) 220px}.canvas-wrap{margin-left:10px;margin-right:10px}.transport{gap:5px}.transport button{width:29px;height:29px}.previewtop{padding:12px 10px}}
+@media(max-height:720px){#workspace{height:auto;min-height:0}#timeline{flex-basis:224px}}
+@media(max-width:730px){body{min-width:650px}#workspace{grid-template-columns:180px minmax(0,1fr) 200px}}
+.import-btn{display:inline-block;color:var(--text);background:#202c36;border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}.import-btn:hover{background:#30424e;border-color:#60818b}.silence-overlay{position:absolute;top:0;bottom:0;background:#ff485e66;border-left:1px solid #ff6d80;border-right:1px solid #ff6d80;pointer-events:none;z-index:1}.silence-auto{display:flex;align-items:center;gap:7px;margin:12px 0;color:var(--muted);font-size:11px}.silence-auto input{accent-color:var(--accent)}#silenceSummary{white-space:pre-line;color:#bcd1d8}#silenceError{color:#ffbdad}.silence-actions{display:grid;gap:9px;margin-top:19px}</style>
+</head>
+<body>
+<header><div class="brand"><span class="logo">◈</span>リールスタジオ</div><span class="tag">アイデアを、ひとつの動画に。</span><div class="divider"></div><select id="aspect" aria-label="アスペクト比"><option value="9:16">▯ 9:16</option><option value="16:9">▭ 16:9</option><option value="1:1">□ 1:1</option></select><div class="spacer"></div><button id="undo" class="icon" title="元に戻す（⌘/Ctrl+Z）">↶</button><button id="redo" class="icon" title="やり直す（⌘/Ctrl+Shift+Z）">↷</button><div class="divider"></div><button id="export" class="primary">↗ エクスポート</button></header>
+<main id="workspace">
+<aside id="left"><nav class="tabs"><button class="active" data-tab="media">メディア</button><button data-tab="text">テキスト</button><button data-tab="filters">フィルター</button><button data-tab="captions">キャプション</button><button data-tab="ai">AIツール</button></nav><div class="tabcontent" id="tab-media"><div class="dropzone" id="dropzone"><div class="importicon">⇧</div><label for="files" id="import" class="import-btn" role="button" tabindex="0">＋ ファイルを読み込む</label><p>ここにドラッグ＆ドロップ<br>動画・画像・オーディオ</p></div><input type="file" id="files" accept="video/*,image/*,audio/*,.mkv,.mov,.m4v,.mp3,.wav,.m4a,.ogg,.webm" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><div class="libraryheader"><span>プロジェクトの素材</span><span id="mediaCount">0 素材</span></div><div class="media-grid" id="mediaGrid"></div><p class="hint">＋ またはタイムラインへのドラッグで追加。<br>素材右上の × で素材と使用中のクリップを削除。</p></div><div class="tabcontent hidden" id="tab-text"><div class="eyebrow">文字のスタイル</div><h2 class="sectiontitle">言葉を重ねよう</h2><button id="addText" class="primary" style="width:100%">Ｔ テキストを追加</button><p class="hint">再生ヘッドの位置に3秒のテキストを追加します。右のパネルでスタイルを編集できます。</p></div><div class="tabcontent hidden" id="tab-filters"><div class="eyebrow">色と雰囲気</div><h2 class="sectiontitle">映像の雰囲気</h2><div class="presetgrid" id="presetGrid"></div><p class="hint">動画または画像のクリップを選択して適用。</p></div><div class="tabcontent hidden" id="tab-captions"><div class="eyebrow">自動キャプション</div><h2 class="sectiontitle">声を、ことばに。</h2><div class="caption-options"><label for="captionLanguage">言語</label><select id="captionLanguage"><option value="japanese">日本語</option><option value="english">英語</option><option value="auto">自動</option></select><label for="captionModel">モデル</label><select id="captionModel"><option value="onnx-community/whisper-base">標準 (whisper-base)</option><option value="onnx-community/whisper-small">高精度 (whisper-small)</option></select><label for="captionMax">1行の最大文字数</label><input id="captionMax" type="number" min="4" max="80" value="16"><label for="captionStyle">スタイル</label><select id="captionStyle"><option value="outline">白文字+黒縁</option><option value="yellow">黄色</option><option value="box">白地に黒文字</option></select></div><button id="generateCaptions" class="primary" style="width:100%;margin-top:20px;padding:13px 5px">自動キャプションを生成</button><p class="hint">初回は約80〜250MBのモデルをダウンロードします（精度設定・実行環境により増える場合があります）。この機能のみネット接続が必要です。音声は端末内で処理します。</p><p id="captionError" class="hint" role="status"></p><h3 class="sectiontitle" style="margin-top:23px">キャプション一括編集</h3><div id="captionList"></div></div><div class="tabcontent hidden" id="tab-ai"><h2 class="sectiontitle">無音カット</h2><p class="hint">話していない間を見つけて自動で切り詰めます</p><div class="control"><label for="silenceThreshold">無音と判定する音量（しきい値）<output id="silenceThresholdValue">自動</output></label><input id="silenceThreshold" type="range" min="-60" max="-20" step="1" value="-40" disabled></div><label class="silence-auto"><input id="silenceAuto" type="checkbox" checked>自動</label><p class="hint">自動では素材の静かな部分を基準に音量を調整します。</p><div class="control"><label for="silenceMinimum">最小の無音の長さ<output id="silenceMinimumValue">0.5 秒</output></label><input id="silenceMinimum" type="range" min="0.2" max="2.0" step="0.1" value="0.5"></div><div class="control"><label for="silencePadding">前後の余白<output id="silencePaddingValue">0.1 秒</output></label><input id="silencePadding" type="range" min="0" max="0.3" step="0.01" value="0.1"></div><div class="silence-actions"><button id="detectSilence" class="primary">無音を検出</button><button id="applySilence" disabled>カットを適用</button></div><p id="silenceSummary" class="hint" role="status">検出後、赤い範囲を確認してカットを適用してください。</p><p id="silenceError" class="hint" role="alert"></p><p class="hint">BGM（オーディオトラック）は切らずにそのまま流れます</p><p class="hint">音声付きの映像がない場合はオーディオトラックを対象にします。選択中のクリップが対象に含まれる場合は、そのクリップのみを解析します。</p></div></aside>
+<section id="center"><div class="previewtop"><span>プレビュー</span><span id="previewInfo">9:16 · 30 fps</span></div><div class="canvas-wrap"><canvas id="preview" width="720" height="1280"></canvas></div><div class="transport"><button id="toStart" title="先頭へ">⏮</button><button id="play" title="再生／一時停止（スペース）">▶</button><span id="timeDisplay" class="time">00:00.00 / 00:00.00</span></div></section>
+<aside id="right"><h2>クリップの設定</h2><div id="properties"></div></aside>
+</main>
+<section id="timeline"><div class="timeline-tools"><button id="split">✂ 分割</button><button id="duplicate">▣ 複製</button><button id="delete">⌫ 削除</button><span class="hint" id="selectionInfo">クリップを選択</span><div class="spacer"></div><span class="hint">吸着 オン</span><div class="divider"></div><label class="zoom">− <input id="zoom" type="range" min="20" max="200" value="65" aria-label="タイムラインのズーム">＋</label></div><div class="timeline-body"><div class="tracklabels"><div class="tracklabel">▧ 映像</div><div class="tracklabel">Ｔ テキスト</div><div class="tracklabel">♫ オーディオ</div></div><div id="timelineScroll"><div id="timelineContent"><div id="ruler"></div><div class="lane" data-track="main"></div><div class="lane" data-track="text"></div><div class="lane" data-track="audio"></div><div id="playhead"></div></div></div></div><div class="statusbar"><span>ローカル編集 · ファイルはアップロードされません</span><span>スペース：再生／停止　·　⌘/Ctrl+Z：元に戻す　·　Delete：削除</span></div></section>
+<div id="silenceModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="silenceTitle"><div class="modal"><h2 id="silenceTitle">無音を検出中</h2><p id="silenceStage" class="hint" role="status">音声を準備中…</p><progress id="silenceProgress" value="0" max="1"></progress><div class="modal-actions"><button id="cancelSilence">キャンセル</button></div></div></div><div id="captionModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="captionTitle"><div class="modal"><div class="eyebrow">端末内の音声認識</div><h2 id="captionTitle">自動キャプションを生成</h2><p class="hint">初回は約80〜250MB以上のダウンロードが必要です。1分の音声で約1〜3分かかります。完了までこのタブを開いてください。</p><p id="captionStage" class="caption-status" role="status">準備中…</p><progress id="captionProgress" max="100" value="0"></progress><p id="captionDetail" class="hint"></p><div class="modal-actions"><button id="cancelCaptions">キャンセル</button></div></div></div>
+<div id="exportModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="exportTitle"><div class="modal"><div class="eyebrow">動画を完成させよう</div><h2 id="exportTitle">動画を書き出す</h2><p class="hint">タイムラインを実時間で録画します。書き出し中はこのタブを開いたままにしてください。</p><label for="resolution">解像度（短辺）</label><select id="resolution"><option value="720">720p · 軽量</option><option value="1080">1080p · 高画質</option></select><p class="hint">30 fps · ブラウザーに応じて MP4 / WebM</p><div id="exportProgress" class="hidden"><progress id="progress" value="0" max="1"></progress><p id="progressText" class="hint">準備中…</p></div><div class="modal-actions"><button id="cancelExport">閉じる</button><button id="startExport" class="primary">書き出し開始</button></div></div></div><div id="toast" class="hidden" role="status"></div>
+<script>
+'use strict';
+window.addEventListener('error',e=>{try{const t=document.getElementById('toast');t.textContent='エラー: '+(e.message||'不明');t.classList.remove('hidden')}catch{}});window.addEventListener('unhandledrejection',e=>{try{const t=document.getElementById('toast');t.textContent='エラー: '+(e.reason?.message||e.reason||'不明');t.classList.remove('hidden')}catch{}});
+// ── 1. Project, assets, history ──────────────────────────────────────
+const $=id=>document.getElementById(id),canvas=$('preview'),ctx=canvas.getContext('2d');
+const clone=x=>JSON.parse(JSON.stringify(x)),clamp=(n,a,b)=>Math.min(b,Math.max(a,n)),uid=()=>crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2);
+let project={aspect:'9:16',clips:[]},library=[],assets=new Map(),players=new Map(),selected=null,time=0,playing=false,zoom=65,lastFrame=0,exportJob=null,gesture=null,propertyBefore=null;
+let captionJob=null,silenceJob=null,silencePreview=null,previewDirty=true;
+const decodedAudioCache=new Map();
+let history=[],historyIndex=-1,audioContext=null,audioDestination=null,toastTimer;
+const filtersDefault=()=>({brightness:100,contrast:100,saturation:100,blur:0,grayscale:0,sepia:0});
+const presets={'なし':{},'ビビッド':{contrast:118,saturation:145},'モノクロ':{grayscale:100,contrast:110},'セピア':{sepia:85,saturation:75},'クール':{saturation:75,contrast:115,brightness:105},'ウォーム':{sepia:30,saturation:125,brightness:105}};
+const duration=()=>project.clips.reduce((d,c)=>Math.max(d,c.start+c.duration),0);
+const active=c=>time>=c.start&&time<c.start+c.duration;
+const getSelected=()=>project.clips.find(c=>c.id===selected);
+const format=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${(t%60).toFixed(2).padStart(5,'0')}`;
+function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),3600)}
+function snapshot(){return JSON.stringify({project,library})}
+function commit(){const s=snapshot();if(history[historyIndex]===s)return;clearSilencePreview();history.splice(historyIndex+1);history.push(s);if(history.length>80)history.shift();historyIndex=history.length-1;cleanup();updateButtons()}
+async function restore(index){if(exportJob||index<0||index>=history.length)return;clearSilencePreview();pause();historyIndex=index;const s=JSON.parse(history[index]);project=s.project;library=s.library;selected=null;for(const id of library)ensureAsset(assets.get(id));time=clamp(time,0,duration());cleanup();setCanvasSize(720);renderLibrary();renderTimeline();renderProperties();renderCaptionList();updateButtons();syncMedia();draw()}
+function cleanup(){for(const [id,p]of players)if(!project.clips.some(c=>c.id===id)){destroyPlayer(p);players.delete(id)}for(const a of assets.values())if(!library.includes(a.id)&&!project.clips.some(c=>c.mediaId===a.id))releaseAsset(a)}
+function releaseAsset(a){decodedAudioCache.delete(a.id);if(a.url)URL.revokeObjectURL(a.url);if(a.thumb?.startsWith('blob:')&&a.thumb!==a.url)URL.revokeObjectURL(a.thumb);a.url=null;a.image=null}
+function ensureAsset(a){if(!a||a.url)return;a.url=URL.createObjectURL(a.file);if(a.type==='image'){a.image=new Image();a.image.src=a.url;a.image.onload=draw}}
+function updateButtons(){const c=getSelected(),locked=!!exportJob;$('undo').disabled=locked||historyIndex<=0;$('redo').disabled=locked||historyIndex>=history.length-1;for(const id of ['split','duplicate','delete'])$(id).disabled=locked||(id==='split'?!project.clips.length:!c);$('selectionInfo').textContent=c?`${c.type==='text'?'テキスト':assets.get(c.mediaId)?.name||'クリップ'} · ${c.duration.toFixed(2)} 秒`:'クリップを選択';$('export').disabled=locked;$('play').textContent=playing?'Ⅱ':'▶';$('aspect').value=project.aspect}
+// ── 2. Import and media library ─────────────────────────────────────
+async function importFiles(files){if(exportJob)return;let count=0;const added=[];for(const file of files){let type=file.type.split('/')[0];if(!['video','image','audio'].includes(type)){const ext=file.name.split('.').pop().toLowerCase();type=/^(mp4|mov|m4v|webm|mkv)$/.test(ext)?'video':/^(mp3|wav|m4a|ogg|aac|flac)$/.test(ext)?'audio':null}if(!type){toast('対応していないファイル形式です');continue}const a={id:uid(),name:file.name,type,file,duration:3,url:null,thumb:null,image:null};ensureAsset(a);try{await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('timeout')),15000);if(type==='image'){const img=a.image;const done=()=>{clearTimeout(timeout);resolve()};if(img.complete&&img.naturalWidth)done();else{img.onload=done;img.onerror=()=>{clearTimeout(timeout);reject(new Error('image'))}}}else{const el=document.createElement(type==='video'?'video':'audio');el.preload='metadata';el.muted=true;el.onloadedmetadata=()=>{if(!Number.isFinite(el.duration)||el.duration<=0){clearTimeout(timeout);el.removeAttribute('src');el.load();reject(new Error('duration'));return}a.duration=el.duration;clearTimeout(timeout);el.removeAttribute('src');el.load();resolve()};el.onerror=()=>{clearTimeout(timeout);el.removeAttribute('src');el.load();reject(new Error('codec'))};el.src=a.url}});if(exportJob){releaseAsset(a);continue}assets.set(a.id,a);library.push(a.id);added.push(a.id);count++}catch{releaseAsset(a);toast(`読み込めませんでした: ${file.name}`)}}if(count){pause();let last=null;for(const id of added){const m=assets.get(id),c=makeClip(m.type,id);c.start=c.track==='main'?project.clips.filter(x=>x.track==='main').reduce((n,x)=>Math.max(n,x.start+x.duration),0):(c.track==='audio'?project.clips.filter(x=>x.track==='audio').reduce((n,x)=>Math.max(n,x.start+x.duration),0):time);project.clips.push(c);last=last||c}if(last){selected=last.id;time=last.start}renderLibrary();commit();refresh();syncMedia();toast(`${count} 個の素材をタイムラインに追加しました`)}}
+function renderLibrary(){const grid=$('mediaGrid');grid.replaceChildren();$('mediaCount').textContent=`${library.length} 素材`;for(const id of library){const a=assets.get(id);ensureAsset(a);const card=document.createElement('div');card.className='media-card';card.draggable=true;const thumb=document.createElement('div');thumb.className='thumb';if(a.type==='image'){const img=new Image();img.src=a.url;img.alt='';thumb.append(img)}else thumb.textContent=a.type==='audio'?'♫':'▶';const name=document.createElement('div');name.className='media-name';name.textContent=a.name;name.title=a.name;const add=document.createElement('button');add.className='add-media';add.textContent='+';add.title='タイムラインに追加';add.onclick=()=>addClip(id);const remove=document.createElement('button');remove.className='remove-media';remove.textContent='×';remove.title='素材を削除';remove.onclick=()=>{if(exportJob)return;pause();project.clips=project.clips.filter(c=>c.mediaId!==id);library=library.filter(x=>x!==id);if(!getSelected())selected=null;time=Math.min(time,duration());commit();refresh();renderLibrary()};card.append(thumb,name,add,remove);card.ondragstart=e=>{e.dataTransfer.setData('application/x-reel-media',id);e.dataTransfer.effectAllowed='copy'};grid.append(card)}}
+function makeClip(type,mediaId=null){return{id:uid(),type,mediaId,track:type==='audio'?'audio':type==='text'?'text':'main',start:0,inPoint:0,duration:type==='video'||type==='audio'?assets.get(mediaId).duration:3,speed:1,volume:1,filter:filtersDefault(),fadeIn:0,fadeOut:0,text:{content:'ここにテキストを入力',fontSize:58,color:'#ffffff',bgColor:'#000000',x:.5,y:.78,bold:true},transform:{scale:1,x:0,y:0}}}
+function freeStart(start,length,exclude=null){let value=Math.max(0,start);const clips=project.clips.filter(c=>c.track==='main'&&c.id!==exclude).sort((a,b)=>a.start-b.start);for(const c of clips){if(value+length<=c.start+.00001)break;if(value<c.start+c.duration-.00001&&value+length>c.start)value=c.start+c.duration}return value}
+function addClip(id,at=null){if(exportJob)return;const a=assets.get(id);if(!a)return;pause();const c=makeClip(a.type,id);c.start=at===null?(c.track==='main'?project.clips.filter(x=>x.track==='main').reduce((n,x)=>Math.max(n,x.start+x.duration),0):time):Math.max(0,at);if(c.track==='main')c.start=freeStart(c.start,c.duration);project.clips.push(c);selected=c.id;time=c.start;commit();refresh();syncMedia()}
+function addText(){if(exportJob)return;pause();const c=makeClip('text');c.start=time;project.clips.push(c);selected=c.id;commit();refresh()}
+// ── 3. Canvas and Web Audio playback engine ──────────────────────────
+function setCanvasSize(shortSide){const [w,h]=project.aspect.split(':').map(Number),ratio=w/h;canvas.width=Math.round(shortSide*(ratio>=1?ratio:1)/2)*2;canvas.height=Math.round(shortSide*(ratio>=1?1:1/ratio)/2)*2;$('previewInfo').textContent=`${project.aspect} · 30 fps`;fitPreview()}
+async function initAudio(){if(!audioContext){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioContext=new AC();audioDestination=audioContext.createMediaStreamDestination()}if(audioContext.state==='suspended')await audioContext.resume();for(const p of players.values())connectPlayer(p)}
+function connectPlayer(p){if(!audioContext||p.source)return;try{p.source=audioContext.createMediaElementSource(p.el);p.gain=audioContext.createGain();p.source.connect(p.gain);p.gain.connect(audioContext.destination);p.gain.connect(audioDestination);p.gain.gain.value=0;p.el.muted=false}catch{toast('オーディオ接続を確認してください')}}
+function getPlayer(c){if(players.has(c.id))return players.get(c.id);const a=assets.get(c.mediaId);if(!a)return null;ensureAsset(a);const el=document.createElement(c.type==='video'?'video':'audio');el.preload='auto';el.playsInline=true;el.muted=true;el.src=a.url;const p={el,source:null,gain:null,pending:false,failed:false};el.addEventListener('seeked',()=>{if(!playing)draw()});el.addEventListener('loadeddata',()=>{syncMedia();draw()});el.addEventListener('error',()=>{p.failed=true;toast(`再生できません: ${a.name}`)});players.set(c.id,p);connectPlayer(p);return p}
+function destroyPlayer(p){p.el.pause();p.source?.disconnect();p.gain?.disconnect();p.el.removeAttribute('src');p.el.load()}
+function opacity(c){const local=time-c.start;return clamp(Math.min(c.fadeIn>0?local/c.fadeIn:1,c.fadeOut>0?(c.duration-local)/c.fadeOut:1),0,1)}
+// Pure helpers are extracted directly by tests/pure.test.mjs.
+function masterClockTime(clip,mediaTime,previous){
+ const mapped=clip.start+(mediaTime-clip.inPoint)/clip.speed;
+ return mapped<previous&&previous-mapped<.05?previous:mapped;
+}
+function captureSamplePlan(sampleRate,actualRate,length,bufferRate=sampleRate*actualRate){
+ const effectiveRate=sampleRate*actualRate;
+ // Playback compresses source time: restore that time axis before storing at
+ // the requested effective rate. Merely relabelling captured samples would
+ // shorten a 4x capture another fourfold and lose caption/silence timestamps.
+ const sourceRate=sampleRate/actualRate;
+ return {effectiveRate,sourceRate,bufferRate,length:Math.max(1,Math.round(length*bufferRate/sourceRate))};
+}
+function resampleCapturedSamples(samples,plan,output=new Float32Array(plan.length)){
+ if(plan.bufferRate===plan.sourceRate){output.set(samples);return output}
+ for(let i=0;i<output.length;i++){const pos=i*plan.sourceRate/plan.bufferRate,left=Math.min(samples.length-1,Math.floor(pos)),right=Math.min(samples.length-1,left+1);output[i]=samples[left]+(samples[right]-samples[left])*(pos-left)}
+ return output;
+}
+function playbackMaster(){const clip=project.clips.find(c=>c.track==='main'&&c.type==='video'&&active(c)),p=clip&&players.get(clip.id);return p&&p.el.readyState>=2&&!p.el.seeking&&!p.el.paused?{clip,el:p.el}:null}
+function setGain(p,value){if(p.gain&&p.gain.gain.value!==value)p.gain.gain.value=value}
+function syncMedia(){const master=playing?playbackMaster():null;for(const c of project.clips){if(!['video','audio'].includes(c.type))continue;let p=players.get(c.id);if(!active(c)){if(p){p.el.pause();setGain(p,0)}continue}p=p||getPlayer(c);if(!p||p.failed)continue;const el=p.el,sourceTime=c.inPoint+(time-c.start)*c.speed;if(el.playbackRate!==c.speed)el.playbackRate=c.speed;const limit=Number.isFinite(el.duration)?Math.max(0,el.duration-.001):Infinity;const target=clamp(sourceTime,0,limit);if(el!==master?.el&&el.readyState>=1&&!el.seeking&&Math.abs(el.currentTime-target)>(playing?.3:.015)){try{el.currentTime=target}catch{}}setGain(p,c.volume*opacity(c));if(playing&&el.paused&&!p.pending){p.pending=true;el.play().catch(()=>{}).finally(()=>{p.pending=false;if(!playing||!active(c))el.pause()})}else if(!playing&&!el.paused)el.pause()}}
+function draw(){previewDirty=true}
+function renderPreview(){previewDirty=false;const w=canvas.width,h=canvas.height;ctx.save();ctx.globalAlpha=1;ctx.fillStyle='#070a0d';ctx.fillRect(0,0,w,h);const c=project.clips.find(c=>c.track==='main'&&active(c));if(c){const a=assets.get(c.mediaId);const source=c.type==='image'?a?.image:getPlayer(c)?.el;const sw=c.type==='image'?source?.naturalWidth:source?.videoWidth,sh=c.type==='image'?source?.naturalHeight:source?.videoHeight;if(source&&sw&&sh){const f=c.filter;ctx.save();if(f.brightness!==100||f.contrast!==100||f.saturation!==100||f.blur!==0||f.grayscale!==0||f.sepia!==0)ctx.filter=`brightness(${f.brightness}%) contrast(${f.contrast}%) saturate(${f.saturation}%) blur(${f.blur*w/720}px) grayscale(${f.grayscale}%) sepia(${f.sepia}%)`;ctx.globalAlpha=opacity(c);const scale=Math.max(w/sw,h/sh)*c.transform.scale;const dw=sw*scale,dh=sh*scale;try{ctx.drawImage(source,(w-dw)/2+c.transform.x*w,(h-dh)/2+c.transform.y*h,dw,dh)}catch{}ctx.restore()}}for(const t of project.clips.filter(c=>c.track==='text'&&active(c))){ctx.save();const v=t.text,size=v.fontSize*w/720;ctx.globalAlpha=opacity(t);ctx.font=`${v.bold?'700':'400'} ${size}px system-ui,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';const lines=wrapCanvasText(v.content,t.caption?w*.9:w*.9-size*.4),lineHeight=size*1.35,cx=v.x*w,cy=v.y*h;for(let i=0;i<lines.length;i++){const y=cy+(i-(lines.length-1)/2)*lineHeight,tw=ctx.measureText(lines[i]).width;if(v.bgColor&&v.bgColor!=='transparent'){ctx.fillStyle=v.bgColor;ctx.fillRect(cx-tw/2-size*.2,y-size*.62,tw+size*.4,size*1.24)}if(v.lineWidth>0){ctx.strokeStyle=v.strokeStyle||'#000000';ctx.lineWidth=v.lineWidth*w/720;ctx.lineJoin='round';ctx.strokeText(lines[i],cx,y)}ctx.fillStyle=v.color;ctx.fillText(lines[i],cx,y)}ctx.restore()}if(!project.clips.length){ctx.fillStyle='#354650';ctx.textAlign='center';ctx.font=`${w*.045}px system-ui`;ctx.fillText('リールスタジオ',w/2,h/2);ctx.fillStyle='#6c818d';ctx.font=`${w*.019}px system-ui`;ctx.fillText('素材を追加して、ストーリーをはじめよう',w/2,h/2+w*.05)}ctx.restore()}
+function pause(){playing=false;for(const p of players.values()){p.el.pause();setGain(p,0)}updateButtons()}
+async function play(){if(exportJob)return;if(!duration()){toast('素材をタイムラインに追加してください');return}await initAudio();if(time>=duration()-.01)time=0;playing=true;lastFrame=performance.now();syncMedia();updateButtons()}
+function seek(t){if(exportJob)return;time=clamp(t,0,duration());syncMedia();draw();updateTransport()}
+function updateTransport(){$('timeDisplay').textContent=`${format(time)} / ${format(duration())}`;$('playhead').style.left=`${time*zoom}px`}
+function frame(now){const elapsed=Math.max(0,(now-lastFrame)/1000);lastFrame=now;if(playing){const master=playbackMaster();time=master?masterClockTime(master.clip,master.el.currentTime,time):time+elapsed;if(time>=duration()){time=duration();syncMedia();renderPreview();updateTransport();if(exportJob)finishExport(false);else pause()}}if(playing||exportJob||previewDirty){syncMedia();renderPreview();updateTransport()}if(exportJob){$('progress').value=duration()?time/duration():0;$('progressText').textContent=`${Math.min(100,Math.floor(time/Math.max(.001,duration())*100))}% · ${format(time)} / ${format(duration())}`}requestAnimationFrame(frame)}
+// ── 4. Timeline, gestures and editing operations ─────────────────────
+function renderTimeline(){const total=Math.max(12,duration()+4),width=Math.max($('timelineScroll').clientWidth,total*zoom);$('timelineContent').style.width=width+'px';const ruler=$('ruler');ruler.replaceChildren();let step=zoom>=100?.5:zoom>=45?1:2;for(let t=0;t<=width/zoom;t+=step){const tick=document.createElement('div');tick.className='tick';tick.style.left=t*zoom+'px';tick.textContent=format(t).slice(0,5)+(step<1?'.'+(t%1?'5':'0'):'');ruler.append(tick)}document.querySelectorAll('.lane').forEach(l=>l.replaceChildren());for(const c of project.clips){const block=document.createElement('div');block.className=`clip ${c.type}${c.id===selected?' selected':''}`;block.dataset.id=c.id;block.style.left=c.start*zoom+'px';block.style.width=c.duration*zoom+'px';const label=document.createElement('span');label.className='cliplabel';label.textContent=c.type==='text'?c.text.content:`${c.type==='audio'?'♫':'▧'} ${assets.get(c.mediaId)?.name||'素材'}`;block.append(label);for(const side of ['left','right']){const handle=document.createElement('div');handle.className=`handle ${side}`;handle.dataset.side=side;block.append(handle)}block.onpointerdown=e=>startGesture(e,c,block);document.querySelector(`.lane[data-track="${c.track}"]`).append(block)}renderSilenceOverlays();updateTransport();updateButtons()}
+function refresh(){renderTimeline();renderProperties();renderCaptionList();updateButtons();draw();updateTransport()}
+function selectClip(id){selected=id;document.querySelectorAll('.clip').forEach(el=>el.classList.toggle('selected',el.dataset.id===id));renderProperties();updateButtons()}
+function snap(value,c,edgeOffset=0){const threshold=Math.min(.1,8/zoom);let best=value,dist=threshold;const targets=[0,time];for(const x of project.clips)if(x.id!==c.id)targets.push(x.start,x.start+x.duration);for(const t of targets)for(const off of [0,edgeOffset]){const delta=Math.abs(value+off-t);if(delta<dist){dist=delta;best=t-off}}return best}
+function startGesture(e,c,el){if(exportJob||e.button!==0)return;e.preventDefault();clearSilencePreview();pause();selectClip(c.id);gesture={id:c.id,x:e.clientX,mode:e.target.dataset.side||'move',original:clone(c),before:snapshot(),pointerId:e.pointerId};el.setPointerCapture(e.pointerId);el.onpointermove=moveGesture;el.onpointerup=endGesture;el.onpointercancel=endGesture}
+function moveGesture(e){if(!gesture)return;const c=project.clips.find(c=>c.id===gesture.id);if(!c)return;const o=gesture.original,delta=(e.clientX-gesture.x)/zoom,others=project.clips.filter(x=>x.track==='main'&&x.id!==c.id);if(gesture.mode==='move'){let target=Math.max(0,snap(o.start+delta,c,o.duration));if(c.track==='main')target=freeStart(target,c.duration,c.id);c.start=target}else if(gesture.mode==='left'){const end=o.start+o.duration,mediaBound=['video','audio'].includes(c.type)?o.start-o.inPoint/o.speed:0;let lower=Math.max(0,mediaBound);if(c.track==='main')for(const x of others)if(x.start+x.duration<=o.start+.001)lower=Math.max(lower,x.start+x.duration);c.start=clamp(snap(o.start+delta,c),lower,end-.05);c.duration=end-c.start;c.inPoint=['video','audio'].includes(c.type)?Math.max(0,o.inPoint+(c.start-o.start)*o.speed):0}else{let maximum=Infinity;if(['video','audio'].includes(c.type))maximum=(assets.get(c.mediaId).duration-c.inPoint)/c.speed;if(c.track==='main')for(const x of others)if(x.start>=o.start+o.duration-.001)maximum=Math.min(maximum,x.start-o.start);c.duration=clamp(snap(o.start+o.duration+delta,c)-o.start,.05,Math.max(.05,maximum))}const block=document.querySelector(`.clip[data-id="${c.id}"]`);if(block){block.style.left=c.start*zoom+'px';block.style.width=c.duration*zoom+'px'}syncMedia();updateTransport();draw()}
+function endGesture(){if(!gesture)return;const changed=snapshot()!==gesture.before;gesture=null;if(changed)commit();refresh()}
+function removeSelected(){if(exportJob||!getSelected())return;pause();project.clips=project.clips.filter(c=>c.id!==selected);selected=null;time=Math.min(time,duration());commit();refresh()}
+function splitClip(){if(exportJob)return;const c=getSelected()||project.clips.find(c=>c.track==='main'&&active(c));if(!c||time<=c.start+.05||time>=c.start+c.duration-.05){toast('クリップの内側に再生ヘッドを移動してください');return}pause();const right=clone(c),leftDuration=time-c.start;right.id=uid();right.start=time;right.duration=c.duration-leftDuration;if(['video','audio'].includes(c.type))right.inPoint=c.inPoint+leftDuration*c.speed;c.duration=leftDuration;c.fadeOut=0;right.fadeIn=0;project.clips.push(right);selected=right.id;commit();refresh()}
+function duplicateSelected(){const c=getSelected();if(!c||exportJob)return;pause();const copy=clone(c);copy.id=uid();copy.start=c.start+c.duration;if(copy.track==='main')copy.start=freeStart(copy.start,copy.duration);project.clips.push(copy);selected=copy.id;commit();refresh()}
+// ── 5. Properties and filter presets ─────────────────────────────────
+function setPath(o,path,value){const parts=path.split('.');let target=o;for(let i=0;i<parts.length-1;i++)target=target[parts[i]];target[parts.at(-1)]=value}
+function getPath(o,path){return path.split('.').reduce((a,k)=>a[k],o)}
+function editProperty(path,value){const c=getSelected();if(!c||exportJob)return;clearSilencePreview();if(!propertyBefore){pause();propertyBefore=snapshot()}if(path==='speed'){const old=c.speed,newDuration=c.duration*old/value;c.speed=value;c.duration=newDuration;if(c.track==='main'){let end=c.start+c.duration;for(const next of project.clips.filter(x=>x.track==='main'&&x.id!==c.id&&x.start>=c.start).sort((a,b)=>a.start-b.start)){if(next.start<end)next.start=end;end=next.start+next.duration}}}else setPath(c,path,value);time=Math.min(time,duration());syncMedia();draw();renderTimeline()}
+function finishProperty(){if(propertyBefore){if(propertyBefore!==snapshot())commit();propertyBefore=null}}
+function rangeControl(parent,label,path,min,max,step,unit='',factor=1){const c=getSelected(),wrap=document.createElement('div');wrap.className='control';const lab=document.createElement('label'),out=document.createElement('output'),input=document.createElement('input');input.type='range';input.min=min;input.max=max;input.step=step;input.value=getPath(c,path)*factor;function output(){out.textContent=Number(input.value).toFixed(step<1?2:0)+unit}output();lab.append(document.createTextNode(label),out);input.oninput=()=>{editProperty(path,Number(input.value)/factor);output()};input.onchange=()=>{finishProperty();renderProperties()};input.onblur=finishProperty;input.disabled=!!exportJob;wrap.append(lab,input);parent.append(wrap)}
+function group(root,title){const div=document.createElement('div');div.className='prop-group';const h=document.createElement('h3');h.textContent=title;div.append(h);root.append(div);return div}
+function renderProperties(){const root=$('properties');root.replaceChildren();const c=getSelected();if(!c){root.innerHTML='<div class="empty-properties"><b>⌖</b>クリップを選択すると<br>ここで調整できます</div>';return}const summary=document.createElement('div');summary.className='hint';summary.textContent=`${c.type==='text'?'テキスト':assets.get(c.mediaId)?.name||'素材'} · 開始 ${format(c.start)}`;root.append(summary);if(c.type==='text'){const g=group(root,'テキスト');const area=document.createElement('textarea');area.value=c.text.content;area.setAttribute('aria-label','テキスト内容');area.disabled=!!exportJob;area.oninput=()=>editProperty('text.content',area.value);area.onchange=()=>{finishProperty();renderCaptionList()};area.onblur=()=>{finishProperty();renderCaptionList()};g.append(area);rangeControl(g,'文字サイズ','text.fontSize',12,160,1,' px');for(const [label,path]of [['文字色','text.color'],['背景色','text.bgColor']]){const wrap=document.createElement('div');wrap.className='control';const l=document.createElement('label');l.textContent=label;const input=document.createElement('input');input.type='color';input.value=getPath(c,path)==='transparent'?'#000000':getPath(c,path);input.disabled=!!exportJob;input.oninput=()=>editProperty(path,input.value);input.onchange=finishProperty;input.onblur=finishProperty;l.append(input);wrap.append(l);g.append(wrap)}const bold=document.createElement('button');bold.textContent='太字';bold.classList.toggle('active',c.text.bold);bold.disabled=!!exportJob;bold.onclick=()=>{editProperty('text.bold',!c.text.bold);finishProperty();renderProperties()};g.append(bold);rangeControl(g,'横位置','text.x',0,100,1,'%',100);rangeControl(g,'縦位置','text.y',0,100,1,'%',100)}if(c.type==='video'||c.type==='audio'){const g=group(root,'再生');rangeControl(g,'速度','speed',.25,4,.05,'×');rangeControl(g,'音量','volume',0,200,1,'%',100)}if(c.track==='main'){let g=group(root,'変形');rangeControl(g,'拡大率','transform.scale',.1,4,.01,'×');rangeControl(g,'横位置','transform.x',-100,100,1,'%',100);rangeControl(g,'縦位置','transform.y',-100,100,1,'%',100);g=group(root,'カラーとフィルター');const sel=document.createElement('select');sel.style.width='100%';sel.setAttribute('aria-label','フィルタープリセット');sel.append(new Option('プリセットを選択',''));for(const name of Object.keys(presets))sel.append(new Option(name,name));sel.disabled=!!exportJob;sel.onchange=()=>applyPreset(sel.value);g.append(sel);for(const [label,key,min,max,step,unit]of [['明るさ','brightness',0,200,1,'%'],['コントラスト','contrast',0,200,1,'%'],['彩度','saturation',0,200,1,'%'],['ぼかし','blur',0,25,.5,' px'],['モノクロ','grayscale',0,100,1,'%'],['セピア','sepia',0,100,1,'%']])rangeControl(g,label,'filter.'+key,min,max,step,unit)}const fade=group(root,'フェード');rangeControl(fade,'フェードイン','fadeIn',0,Math.min(10,c.duration),.05,' 秒');rangeControl(fade,'フェードアウト','fadeOut',0,Math.min(10,c.duration),.05,' 秒');const del=document.createElement('button');del.textContent='⌫ クリップを削除';del.style.cssText='width:100%;margin-top:18px;color:#eea9ad';del.disabled=!!exportJob;del.onclick=removeSelected;root.append(del)}
+function applyPreset(name){const c=getSelected();if(exportJob)return;if(!c||c.track!=='main'){toast('映像トラックのクリップを選択してください');return}pause();c.filter={...filtersDefault(),...presets[name]};commit();renderProperties();draw();toast(`${name} を適用しました`)}
+// ── 6. Real-time export: canvas + mixed audio ─────────────────────────
+function openExport(){if(!duration()){toast('書き出すクリップがありません');return}if(!window.MediaRecorder||!canvas.captureStream){toast('このブラウザーは録画に対応していません');return}$('exportModal').classList.remove('hidden')}
+function prepareAtZero(){time=0;syncMedia();return Promise.all(project.clips.filter(c=>['video','audio'].includes(c.type)&&c.start===0).map(c=>new Promise(resolve=>{const p=getPlayer(c),el=p.el;let done=false;const finish=()=>{if(done)return;done=true;clearTimeout(timer);el.removeEventListener('seeked',finish);el.removeEventListener('loadeddata',ready);el.removeEventListener('error',finish);resolve()};const ready=()=>{if(el.readyState<2)return;const target=c.inPoint;if(Math.abs(el.currentTime-target)<.02&&!el.seeking)finish();else if(!el.seeking){try{el.currentTime=target}catch{finish()}}};const timer=setTimeout(finish,5000);el.addEventListener('seeked',finish);el.addEventListener('loadeddata',ready);el.addEventListener('error',finish);ready()})))}
+async function startExport(){if(exportJob||!duration())return;finishProperty();pause();const savedTime=time,job={savedTime,cancelled:false,finishing:false,recorder:null,stream:null,chunks:[]};exportJob=job;$('startExport').disabled=true;$('resolution').disabled=true;$('cancelExport').textContent='キャンセル';$('exportProgress').classList.remove('hidden');$('progressText').textContent='素材と音声を準備中…';$('progress').value=0;updateButtons();renderProperties();try{await initAudio();if(exportJob!==job||job.cancelled)return;setCanvasSize(Number($('resolution').value));await prepareAtZero();if(exportJob!==job||job.cancelled)return;renderPreview();const options=['video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));if(!options)throw new Error('対応する録画形式がありません');const stream=canvas.captureStream(30);if(audioDestination)for(const track of audioDestination.stream.getAudioTracks())stream.addTrack(track.clone());job.stream=stream;const recorder=new MediaRecorder(stream,{mimeType:options,videoBitsPerSecond:8000000,audioBitsPerSecond:192000});job.recorder=recorder;recorder.ondataavailable=e=>{if(e.data.size)job.chunks.push(e.data)};recorder.onerror=()=>{toast('録画中にエラーが発生しました');finishExport(true)};recorder.onstop=()=>{if(!job.cancelled&&job.chunks.length){const blob=new Blob(job.chunks,{type:recorder.mimeType}),name='reel-studio-export.'+(recorder.mimeType.includes('mp4')?'mp4':'webm');saveExport(blob,name)}resetExport(job)};recorder.start(200);playing=true;lastFrame=performance.now();syncMedia();updateButtons()}catch(e){console.debug('[export] error',e);toast('書き出せませんでした。録画形式とブラウザーの対応状況を確認してください。');if(job.recorder?.state==='recording')finishExport(true);else resetExport(job)}}
+let downloadsApi=null;try{window.claude?.use?.('downloads').then(d=>{downloadsApi=d}).catch(()=>{})}catch{}
+async function saveExport(blob,name){if(downloadsApi){try{await downloadsApi.save({filename:name,data:blob});toast('動画を書き出しました')}catch(e){toast(e?.code==='declined'?'保存をキャンセルしました':e?.code==='rate_limited'?'少し待ってからもう一度書き出してください':'この画面では保存できませんでした')}return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);toast('動画を書き出しました')}
+function finishExport(cancelled){const job=exportJob;if(!job||job.finishing)return;job.finishing=true;job.cancelled=cancelled;pause();if(job.recorder&&job.recorder.state!=='inactive')job.recorder.stop();else resetExport(job)}
+function resetExport(job){job.stream?.getTracks().forEach(t=>t.stop());if(exportJob!==job)return;exportJob=null;playing=false;time=Math.min(job.savedTime,duration());setCanvasSize(720);$('startExport').disabled=false;$('resolution').disabled=false;$('cancelExport').textContent='閉じる';$('exportProgress').classList.add('hidden');$('exportModal').classList.add('hidden');syncMedia();refresh()}
+// ── 7. Responsive preview and shared text rendering ─────────────────
+function fitPreview(){draw();const box=canvas.parentElement;if(!box)return;const width=box.clientWidth,height=box.clientHeight,ratio=canvas.width/canvas.height;const fittedWidth=Math.max(0,Math.min(width,height*ratio));canvas.style.width=fittedWidth+'px';canvas.style.height=(fittedWidth/ratio)+'px'}
+function wrapCanvasText(text,maxWidth){const lines=[];for(const paragraph of String(text).split('\n')){let line='';for(const char of Array.from(paragraph)){if(line&&ctx.measureText(line+char).width>maxWidth){const chars=Array.from(line);let split=chars.length;for(let i=chars.length-1;i>=Math.floor(chars.length*.4);i--)if(/[\s。、,.!?！？]/u.test(chars[i])){split=i+1;break}lines.push(chars.slice(0,split).join('').trimEnd());line=chars.slice(split).join('').trimStart()}line+=char}lines.push(line)}return lines}
+// ── 8. Lazy Whisper runtime (shared by module worker and fallback) ───
+async function createSpeechEngine(config,progress){
+ console.debug('[captions] runtime import',config.device,config.model);
+ const {pipeline,env}=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5');
+ env.allowLocalModels=false;
+ env.backends.onnx.wasm.numThreads=globalThis.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
+ env.backends.onnx.wasm.proxy=false;
+ const device=config.device||(navigator.gpu?'webgpu':'wasm');
+ const dtype=device==='webgpu'?{encoder_model:'fp32',decoder_model_merged:'q4'}:'q8';
+ console.debug('[captions] model load start',{device,dtype,threads:env.backends.onnx.wasm.numThreads});
+ const recognizer=await pipeline('automatic-speech-recognition',config.model,{device,dtype,progress_callback:progress});
+ console.debug('[captions] model ready',device);
+ return {device,async transcribe(samples){
+  console.debug('[captions] inference start',device,samples.length,samples.length/16000);
+  let lastUpdate=0;const notify=()=>{const now=Date.now();if(now-lastUpdate>=500){lastUpdate=now;progress({status:'transcription-progress'})}};
+  const options={task:'transcribe',return_timestamps:true,chunk_length_s:30,stride_length_s:5,streamer:{put:notify,end:notify}};
+  if(config.language!=='auto')options.language=config.language;
+  const result=await recognizer(samples,options);console.debug('[captions] inference complete',device,result.chunks?.length||0);return result;
+ },async dispose(){await recognizer.dispose()}};
+}
+function captionWorkerEntry(){
+ let engine=null,currentRequest=null;
+ self.onmessage=async({data})=>{
+  currentRequest=data.id;console.debug('[captions] worker request',data.type,data.id);
+  try{
+   if(data.type==='init'){engine=await createSpeechEngine(data.config,event=>self.postMessage({type:'progress',id:currentRequest,event}));self.postMessage({id:data.id,result:{device:engine.device}})}
+   else if(data.type==='transcribe'){
+    if(!engine||!(data.samples instanceof Float32Array)||!data.samples.length)throw new Error('音声データをワーカーに転送できませんでした');
+    const result=await engine.transcribe(data.samples);self.postMessage({id:data.id,result});
+   }else throw new Error('不明な音声認識リクエストです');
+   console.debug('[captions] worker result posted',data.type,data.id);
+  }catch(error){console.debug('[captions] worker error',data.id,error);self.postMessage({id:data.id,error:String(error?.message||error)})}
+ };
+ console.debug('[captions] worker boot');self.postMessage({type:'boot'});
+}
+function abortCaptionError(){return new DOMException('キャンセルしました','AbortError')}
+function assertCaptionJob(job){if(job.cancelled||captionJob!==job)throw abortCaptionError()}
+// Every wait settles on a result, error, cancellation, or inactivity deadline.
+function captionWait(job,promise,timeoutMs,lastActivity=null){
+ const started=Date.now();return new Promise((resolve,reject)=>{
+  let settled=false;const waiters=job.waiters||(job.waiters=new Set());
+  const finish=(fn,value)=>{if(settled)return;settled=true;clearInterval(timer);waiters.delete(cancel);fn(value)};
+  const cancel=()=>finish(reject,abortCaptionError());
+  const timer=setInterval(()=>{if(job.cancelled||captionJob!==job){cancel();return}if(Date.now()-(lastActivity?lastActivity():started)>=timeoutMs){const error=new Error('音声認識から応答がありません（タイムアウト）');error.code='CAPTION_TIMEOUT';console.debug('[captions] watchdog timeout',timeoutMs);finish(reject,error)}},1000);
+  waiters.add(cancel);Promise.resolve(promise).then(value=>finish(resolve,value),error=>finish(reject,error));
+  if(job.cancelled||captionJob!==job)cancel();
+ });
+}
+async function createCaptionRunner(job,config,onProgress){
+ assertCaptionJob(job);let worker=null,url=null,stopped=false,serial=0,bootReject=null;
+ const pending=new Map();let loadActivity=Date.now();
+ const progress=event=>{if(job.cancelled)return;if(['progress','done','ready'].includes(event.status))loadActivity=Date.now();onProgress(event)};
+ const stopWorker=(error=new Error('音声認識ワーカーを終了しました'))=>{
+  if(stopped)return;stopped=true;console.debug('[captions] worker stop',error.message,'pending',pending.size);
+  worker?.terminate();if(job.worker===worker){job.worker=null;job.rejectPending=null}
+  bootReject?.(error);bootReject=null;for(const request of pending.values())request.reject(error);pending.clear();
+ };
+ if(!config.mainThread){
+  try{
+   console.debug('[captions] worker creation',config.device);
+   url=URL.createObjectURL(new Blob([createSpeechEngine.toString()+'\n('+captionWorkerEntry.toString()+')();'],{type:'text/javascript'}));
+   worker=new Worker(url,{type:'module'});job.worker=worker;job.rejectPending=()=>stopWorker(abortCaptionError());
+   const boot=new Promise((resolve,reject)=>{
+    bootReject=reject;
+    worker.onmessage=({data})=>{
+     if(stopped)return;
+     if(data.type==='boot'){bootReject=null;console.debug('[captions] boot received');resolve();return}
+     if(data.type==='progress'){if(pending.has(data.id))progress(data.event);return}
+     const request=pending.get(data.id);if(!request)return;pending.delete(data.id);
+     console.debug('[captions] response received',data.id,data.error?'error':'result','pending',pending.size);
+     data.error?request.reject(new Error(data.error)):request.resolve(data.result);
+    };
+    worker.onerror=event=>{event.preventDefault();stopWorker(new Error('音声認識ワーカーでエラーが発生しました: '+(event.message||'不明なエラー')))};
+    worker.onmessageerror=()=>stopWorker(new Error('音声認識ワーカーの結果を受信できませんでした'));
+   });
+   await captionWait(job,boot,10000);assertCaptionJob(job);
+   const call=(type,payload,timeoutMs,lastActivity)=>{
+    const request=new Promise((resolve,reject)=>{
+     assertCaptionJob(job);if(stopped){reject(new Error('音声認識ワーカーは停止しています'));return}
+     const id=++serial;pending.set(id,{resolve,reject});
+     try{const transfer=payload.samples?[payload.samples.buffer]:[];worker.postMessage({id,type,...payload},transfer);console.debug('[captions] request sent',type,id,'transferred buffers',transfer.length)}catch(error){pending.delete(id);reject(error)}
+    });
+    return captionWait(job,request,timeoutMs,lastActivity).catch(error=>{stopWorker(error);throw error});
+   };
+   loadActivity=Date.now();const ready=await call('init',{config},120000,()=>loadActivity);assertCaptionJob(job);
+   return {device:ready.device,kind:'worker',transcribe(samples,timeoutMs){
+    // Transfer a copy: keep the original audio intact for a CPU retry.
+    return call('transcribe',{samples:samples.slice()},timeoutMs,()=>job.inferenceActivity);
+   },dispose(){stopWorker()}};
+  }catch(error){stopWorker(error);assertCaptionJob(job);console.debug('[captions] worker path failed; main-thread fallback',error.message);$('captionDetail').textContent='ワーカーから応答がないため、メインスレッドで再試行します。'}
+  finally{if(url)URL.revokeObjectURL(url)}
+ }
+ assertCaptionJob(job);
+ // No awaited disposal: even a stuck backend must not keep the modal open.
+ let engine=null,inflight=null,disposed=false,mainLoadSerial=0;
+ const disposeEngine=value=>{try{Promise.resolve(value?.dispose()).catch(error=>console.debug('[captions] cleanup error',error))}catch(error){console.debug('[captions] cleanup error',error)}};
+ const loadMain=async device=>{
+  loadActivity=Date.now();const attempt=++mainLoadSerial;const loading=createSpeechEngine({...config,device},event=>{if(!disposed&&attempt===mainLoadSerial)progress(event)});
+  try{return await captionWait(job,loading,120000,()=>loadActivity)}catch(error){loading.then(disposeEngine,()=>{});throw error}
+ };
+ const preferred=config.device||(navigator.gpu?'webgpu':'wasm');
+ console.debug('[captions] main-thread load',preferred);
+ try{engine=await loadMain(preferred)}catch(error){assertCaptionJob(job);if(preferred==='wasm')throw error;console.debug('[captions] main GPU load failed; load WASM',error.message);engine=await loadMain('wasm')}
+ assertCaptionJob(job);
+ return {device:engine.device,kind:'main',transcribe(samples,timeoutMs){
+  if(disposed)return Promise.reject(new Error('音声認識は終了しています'));
+  inflight=Promise.resolve().then(()=>engine.transcribe(samples));
+  return captionWait(job,inflight,timeoutMs,()=>job.inferenceActivity);
+ },dispose(){if(disposed)return;disposed=true;if(inflight)inflight.then(()=>disposeEngine(engine),()=>disposeEngine(engine));else disposeEngine(engine)}};
+}
+async function transcribeCaptionClip(job,state,samples,config,index,total){
+ const started=Date.now(),audioSeconds=samples.length/16000;let retryLabel='';
+ const update=()=>{if(captionJob===job&&!job.cancelled){$('captionStage').textContent=`${retryLabel||('文字起こし中 '+(index+1)+'/'+total+' クリップ')} · ${Math.floor((Date.now()-started)/1000)} 秒経過`;$('captionDetail').textContent='1分の音声で約1〜3分かかります'}};
+ update();const clock=setInterval(update,1000);
+ try{
+  job.inferenceActivity=Date.now();
+  const gpu=state.runner.device==='webgpu';
+  console.debug('[captions] clip start',{index:index+1,total,audioSeconds,device:state.runner.device,path:state.runner.kind});
+  try{return await state.runner.transcribe(samples,Math.max(gpu?60:180,(gpu?8:24)*audioSeconds)*1000)}
+  catch(error){
+   assertCaptionJob(job);
+   if(!gpu){
+    if(state.runner.kind!=='worker')throw error;
+    console.debug('[captions] CPU worker failed; main-thread retry',error.message);
+   }else console.debug('[captions] GPU failed/watchdog; retry once on CPU',error.message);
+   state.runner.dispose();
+   retryLabel=gpu?'高速処理で応答がないため標準処理で再試行中…':'バックグラウンド処理で応答がないため標準処理で再試行中…';update();
+   $('captionDetail').textContent='1分の音声で約1〜3分かかります';
+   // The measured safe path: one WASM/q8 retry on the main thread.
+   state.runner=await createCaptionRunner(job,{...config,device:'wasm',mainThread:true},event=>captionInferenceProgress(job,event));
+   assertCaptionJob(job);job.inferenceActivity=Date.now();retryLabel='';update();
+   return await state.runner.transcribe(samples,Math.max(180,24*audioSeconds)*1000);
+  }
+ }finally{clearInterval(clock);console.debug('[captions] clip wait finished',index+1,Math.floor((Date.now()-started)/1000))}
+}
+function captionInferenceProgress(job,event){
+ if(captionJob!==job||job.cancelled)return;
+ if(event.status==='transcription-progress'){job.inferenceActivity=Date.now();return}
+ captionDownloadProgress(job,event);
+}
+// ── 9. Audio decode, source-range resampling and caption segmentation ─
+async function captionSamples(clip,decoded,job){
+ console.debug('[captions] audio decode/resample',clip.id,clip.inPoint,clip.duration,clip.speed);assertCaptionJob(job);const asset=assets.get(clip.mediaId);if(!asset)return null;
+ let buffer=decoded.get(asset.id);
+ if(!buffer){try{assertCaptionJob(job);buffer=await decodeMediaAudio(asset,job.decoder,job);decoded.set(asset.id,buffer)}catch(error){if(job.cancelled)throw abortCaptionError();job.skipped++;(job.decodeErrors||(job.decodeErrors=[])).push(error.message||String(error));return null}}
+ assertCaptionJob(job);const start=clamp(clip.inPoint,0,buffer.duration),end=Math.min(buffer.duration,clip.inPoint+clip.duration*clip.speed);
+ if(end-start<.05||!buffer.numberOfChannels){job.skipped++;return null}
+ const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!Offline)throw new Error('このブラウザーは音声のリサンプリングに対応していません');
+ const offline=new Offline(1,Math.ceil((end-start)*16000),16000),source=offline.createBufferSource();source.buffer=buffer;source.connect(offline.destination);source.start(0,start,end-start);
+ const rendered=await offline.startRendering();assertCaptionJob(job);const samples=rendered.getChannelData(0);console.debug('[captions] audio ready',samples.length,'samples');let energy=0;for(let i=0;i<samples.length;i++)energy+=samples[i]*samples[i];if(energy/samples.length<1e-16){job.skipped++;job.silent=(job.silent||0)+1;return null}return samples;
+}
+function cleanCaption(text){return String(text||'').replace(/(?:\(|（|\[|【)\s*(?:音楽|拍手|無音|笑い|雑音|music|applause|silence|laughter|noise)\s*(?:\)|）|\]|】)/giu,'').trim()}
+function meaningfulCaption(text){return /[\p{L}\p{N}]/u.test(text)}
+// Split oversized clauses into the fewest parts, balancing length and natural boundaries.
+function balancedCaptionParts(text,max){
+ const chars=Array.from(text),n=chars.length,count=Math.ceil(n/max);if(count<=1)return [text];
+ const target=n/count,states=Array.from({length:count+1},()=>new Map());states[0].set(0,{cost:0,parts:[]});
+ const boundaryCost=pos=>{
+  if(pos===n)return 0;const prefix=chars.slice(Math.max(0,pos-2),pos).join('');
+  if(/(?:から|まで|[はがをにでとものへ])$/u.test(prefix))return 0;
+  if(/[\p{Script=Han}]/u.test(chars[pos-1])&&/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(chars[pos]))return 3;
+  return 18;
+ };
+ for(let part=1;part<=count;part++)for(const [start,state]of states[part-1]){
+  const remaining=count-part,minimum=Math.max(start+1,n-remaining*max),maximum=Math.min(start+max,n-remaining);
+  for(let end=minimum;end<=maximum;end++){
+   const length=end-start;if(length<=3&&n>=count*4)continue;
+   const cost=state.cost+(length-target)**2+boundaryCost(end);
+   if(!states[part].has(end)||cost<states[part].get(end).cost)states[part].set(end,{cost,parts:[...state.parts,chars.slice(start,end).join('')]});
+  }
+ }
+ return states[count].get(n)?.parts||Array.from({length:count},(_,i)=>chars.slice(Math.round(i*n/count),Math.round((i+1)*n/count)).join(''));
+}
+function splitCaptionText(text,max){
+ max=Math.max(4,Math.floor(Number(max)||16));text=String(text).trim();if(!meaningfulCaption(text))return [];
+ // Preserve punctuation and spaces; sentence boundaries take precedence over clause/word boundaries.
+ const sentences=text.match(/[^。！？!?]*[。！？!?]+|[^。！？!?]+$/gu)||[];
+ const pieces=[];
+ for(const sentence of sentences)for(const token of sentence.match(/[^、,\s]+[、,]*\s*|[、,\s]+/gu)||[]){
+  const body=token.trim(),space=token.match(/\s+$/u)?.[0]||'';
+  if(Array.from(body).length>max){const parts=balancedCaptionParts(body,max);parts[parts.length-1]+=space;pieces.push(...parts)}else pieces.push(token);
+ }
+ const lines=[];let current='';const length=value=>Array.from(value.trim()).length;
+ const normalized=text.replace(/\s+/gu,' '),joinLines=(left,right)=>normalized.includes(left+' '+right)?left+' '+right:left+right;
+ for(const piece of pieces){if(current&&length(current+piece)>max){lines.push(current.trim());current=''}current+=piece}if(current.trim())lines.push(current.trim());
+ // Repair tiny/punctuation-only tails, including a short opening clause.
+ for(let i=0;i<lines.length;i++){
+  if(length(lines[i])>3&&meaningfulCaption(lines[i]))continue;
+  if(i>0&&length(joinLines(lines[i-1],lines[i]))<=max+4){lines[i-1]=joinLines(lines[i-1],lines[i]);lines.splice(i--,1)}
+  else if(i+1<lines.length&&length(joinLines(lines[i],lines[i+1]))<=max+4){lines[i]=joinLines(lines[i],lines[i+1]);lines.splice(i+1,1);i--}
+  else if(!meaningfulCaption(lines[i])){lines.splice(i--,1)}
+  else if(i>0){const combined=joinLines(lines[i-1],lines[i]),parts=balancedCaptionParts(combined,max+4);lines.splice(i-1,2,...parts);i=Math.max(-1,i-2)}
+ }
+ return lines.filter(meaningfulCaption).map(text=>({text,weight:Array.from(text).length}));
+}
+function captionSegments(result,clip,max){const chunks=Array.isArray(result?.chunks)?result.chunks:[];const rows=[];let last='';for(const chunk of chunks){const text=cleanCaption(chunk.text),key=text.replace(/[\p{P}\p{Z}\s]/gu,'').toLowerCase();if(!meaningfulCaption(text)||key===last)continue;last=key;const stamp=chunk.timestamp||[],relativeStart=Number(stamp[0]),relativeEnd=stamp[1]==null?clip.duration*clip.speed:Number(stamp[1]);if(stamp[0]==null||!Number.isFinite(relativeStart)||!Number.isFinite(relativeEnd))continue;
+ // Whisper timestamps are relative to the sliced audio, so restore the source offset first.
+ const srcStart=clip.inPoint+Math.max(0,relativeStart),srcEnd=clip.inPoint+Math.min(clip.duration*clip.speed,relativeEnd);
+ const start=clip.start+(srcStart-clip.inPoint)/clip.speed,end=clip.start+(srcEnd-clip.inPoint)/clip.speed;if(end<=start)continue;
+ const pieces=splitCaptionText(text,max),weight=pieces.reduce((n,p)=>n+p.weight,0);let cursor=start;for(const part of pieces){const next=cursor+(end-start)*part.weight/weight;rows.push({start:cursor,end:next,text:part.text});cursor=next}}
+ return rows;
+}
+// Store caption font size at the same 720px reference width used by draw(), preserving its width ratio on aspect/export changes.
+function buildCaptionClips(rows,style,retained,maxChars=16){const output=[],occupied=retained.filter(c=>c.track==='text').map(c=>[c.start,c.start+c.duration]);let lastKey='',lastEnd=-Infinity;
+ for(const row of rows.sort((a,b)=>a.start-b.start||a.end-b.end)){let start=row.start,end=row.end;const key=row.text.replace(/[\p{P}\p{Z}\s]/gu,'').toLowerCase();if(key===lastKey&&start-lastEnd<1)continue;
+  let spans=[[start,end]];for(const [a,b]of occupied){spans=spans.flatMap(([s,e])=>e<=a||s>=b?[[s,e]]:[[s,Math.min(e,a)],[Math.max(s,b),e]].filter(([x,y])=>y-x>=.05))}
+  for(const [s,e]of spans){if(e-s<.05)continue;const c=makeClip('text');c.caption=true;c.start=s;c.duration=e-s;c.text={...c.text,content:row.text,x:.5,y:.82,fontSize:clamp(Math.floor(720*.9/Math.max(4,maxChars)),8,96),bold:true,color:style==='yellow'?'#ffe34d':style==='box'?'#111111':'#ffffff',bgColor:style==='box'?'#ffffff':'transparent',strokeStyle:'#000000',lineWidth:style==='box'?0:5};output.push(c);occupied.push([s,e])}lastKey=key;lastEnd=end;
+ }return output;
+}
+function renderCaptionList(){const root=$('captionList');if(!root)return;root.replaceChildren();const captions=project.clips.filter(c=>c.caption).sort((a,b)=>a.start-b.start);if(!captions.length){const p=document.createElement('p');p.className='hint';p.textContent='生成したキャプションがここに表示されます。';root.append(p);return}for(const c of captions){const row=document.createElement('div');row.className='caption-row';const jump=document.createElement('button');jump.textContent=`${format(c.start)} → ${format(c.start+c.duration)}`;jump.onclick=()=>{if(exportJob||captionJob)return;pause();seek(c.start);selectClip(c.id)};const input=document.createElement('input');input.type='text';input.value=c.text.content;input.setAttribute('aria-label',format(c.start)+' のキャプション');input.onfocus=()=>{pause();selectClip(c.id)};input.oninput=()=>{editProperty('text.content',input.value);if(selected===c.id){const area=$('properties').querySelector('textarea');if(area)area.value=input.value}};input.onchange=finishProperty;input.onblur=finishProperty;input.disabled=!!exportJob||!!captionJob;row.append(jump,input);root.append(row)}}
+// ── 10. Caption transaction, progress and cancellation ───────────────
+function captionDownloadProgress(job,event){if(job.cancelled||captionJob!==job)return;if(event.status==='fallback'){$('captionDetail').textContent='実行環境を切り替えています（ウェブアセンブリー・8ビット量子化）。';return}if(event.file){const key=(event.name||'')+'/'+event.file;const previous=job.downloads.get(key)||{};job.downloads.set(key,{loaded:event.status==='done'?(previous.total||1):(event.loaded??previous.loaded??0),total:event.total??previous.total??0,done:event.status==='done'})}let loaded=0,total=0;for(const f of job.downloads.values()){if(f.total){loaded+=f.done?f.total:f.loaded;total+=f.total}}const percent=total?clamp(loaded/total*100,0,100):Number(event.progress)||0;$('captionStage').textContent=`モデルをダウンロード中 ${Math.floor(percent)}%`;$('captionProgress').value=percent}
+function cancelCaptionGeneration(){const job=captionJob;if(!job)return;console.debug('[captions] cancel');job.cancelled=true;job.audioCancel?.();job.rejectPending?.();for(const cancel of job.waiters||[])cancel();job.worker?.terminate();job.decoder?.close().catch(()=>{});$('captionModal').classList.add('hidden');captionJob=null;$('generateCaptions').disabled=false;renderCaptionList();toast('キャプション生成をキャンセルしました')}
+async function generateCaptions(){
+ if(exportJob||captionJob)return;finishProperty();pause();$('captionError').textContent='';
+ const sources=project.clips.filter(c=>(c.type==='video'&&c.track==='main')||(c.type==='audio'&&c.track==='audio')).map(clone).sort((a,b)=>a.start-b.start);
+ if(!sources.length){$('captionError').textContent='音声を含む動画またはオーディオをタイムラインに追加してください。';return}
+ if(project.clips.some(c=>c.caption)&&!confirm('既存のキャプションを置き換えますか？（通常のテキストは保持されます）'))return;
+ const config={model:$('captionModel').value,language:$('captionLanguage').value,device:navigator.gpu?'webgpu':'wasm'},max=clamp(Math.floor(Number($('captionMax').value)||16),4,80),style=$('captionStyle').value;
+ $('captionMax').value=max;const job={cancelled:false,worker:null,decoder:null,downloads:new Map(),skipped:0};captionJob=job;$('generateCaptions').disabled=true;$('captionModal').classList.remove('hidden');$('captionStage').textContent='音声を解析中';$('captionDetail').textContent='音声トラックのない素材や無音の素材はスキップします。';$('captionProgress').value=0;
+ const state={runner:null};const decoded=new Map();console.debug('[captions] generation start',config,sources.length);
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('このブラウザーは音声解析に対応していません');job.decoder=new AC();await job.decoder.resume();
+  // Decode before downloading: silent/video-only projects never need a model.
+  let first=null,firstIndex=-1;for(let i=0;i<sources.length;i++){const samples=await captionSamples(sources[i],decoded,job);if(samples){first=samples;firstIndex=i;break}}
+  assertCaptionJob(job);if(!first)throw new Error(job.decodeErrors?.length?job.decodeErrors.join('\n')+(job.silent?'\nほかの素材は無音でした。':''):'解析できる音声がありません。対象範囲が短すぎるか、すべての素材が無音です。');
+  $('captionStage').textContent='モデルをダウンロード中 0%';state.runner=await createCaptionRunner(job,config,event=>captionInferenceProgress(job,event));assertCaptionJob(job);
+  const rows=[];for(let i=firstIndex;i<sources.length;i++){assertCaptionJob(job);$('captionStage').textContent=`音声を解析中 ${i+1}/${sources.length} クリップ`;const samples=i===firstIndex?first:await captionSamples(sources[i],decoded,job);if(!samples)continue;assertCaptionJob(job);$('captionStage').textContent=`文字起こし中 ${i+1}/${sources.length} クリップ`;$('captionProgress').value=i/sources.length*100;const result=await transcribeCaptionClip(job,state,samples,config,i,sources.length);assertCaptionJob(job);rows.push(...captionSegments(result,sources[i],max))}
+  const retained=project.clips.filter(c=>!c.caption),captions=buildCaptionClips(rows,style,retained,max);if(!captions.length)throw new Error('発話を検出できませんでした。音声や言語設定を確認してください。既存のキャプションは保持されています。');
+  assertCaptionJob(job);project.clips=[...retained,...captions];selected=captions[0].id;commit();console.debug('[captions] clips committed',captions.length);toast(`${captions.length} 件のキャプションを生成しました${job.skipped?'（音声なし等 '+job.skipped+' 件をスキップ）':''}`);
+ }catch(error){console.debug('[captions] generation error',error);if(!job.cancelled){$('captionError').textContent='キャプションを生成できませんでした。ネット接続、モデル取得、音声形式、ブラウザーの対応状況を確認してください。\n'+String(error?.message||error);toast('キャプション生成に失敗しました。左パネルの詳細を確認してください。')}}
+ finally{decoded.clear();if(captionJob===job){captionJob=null;$('generateCaptions').disabled=false;$('captionModal').classList.add('hidden');refresh();console.debug('[captions] modal closed; caption list refreshed')}try{job.decoder?.close().catch(()=>{})}catch{}try{state.runner?.dispose()}catch{}job.rejectPending?.();job.worker?.terminate();for(const cancel of job.waiters||[])cancel()}
+}
+// ── 11. Silence removal: pure functions, directly testable in Node ──
+function silenceRangesFromDb(frames,{threshold=-40,minDuration=.5,padding=.1,frameSeconds=.02,duration=frames.length*frameSeconds}={}){
+ const ranges=[];let first=-1;
+ for(let i=0;i<=frames.length;i++){
+  if(i<frames.length&&frames[i]<threshold){if(first<0)first=i;continue}
+  if(first>=0){const start=first*frameSeconds,end=Math.min(i*frameSeconds,duration);if(end-start+1e-9>=minDuration&&end-start>2*padding+1e-9)ranges.push([start+padding,end-padding]);first=-1}
+ }return ranges;
+}
+function silenceAutoThreshold(frames){if(!frames.length)return -40;const sorted=Array.from(frames).sort((a,b)=>a-b),floor=sorted[Math.floor((sorted.length-1)*.2)];return Math.min(-25,Math.max(-55,floor+10))}
+function mapSilenceRanges(sourceRanges,clip){return sourceRanges.map(([start,end])=>[clip.start+(start-clip.inPoint)/clip.speed,clip.start+(end-clip.inPoint)/clip.speed])}
+function mergeSilenceRanges(ranges){const merged=[];for(const [start,end]of ranges.filter(([s,e])=>Number.isFinite(s)&&Number.isFinite(e)&&e>s).map(r=>r.slice()).sort((a,b)=>a[0]-b[0])){const last=merged[merged.length-1];if(last&&start<=last[1]+1e-8)last[1]=Math.max(last[1],end);else merged.push([start,end])}return merged}
+function silenceTimeAfterCuts(time,cuts){let removed=0;for(const [start,end]of cuts){if(start>=time)break;removed+=Math.max(0,Math.min(time,end)-start)}return time-removed}
+function rippleApplySilence(input,detections,track){
+ const result=JSON.parse(JSON.stringify(input)),ids=new Set(result.clips.map(c=>c.id));
+ const cuts=mergeSilenceRanges(detections.flatMap(d=>{const c=result.clips.find(c=>c.id===d.clipId&&c.track===track);return c?d.ranges.map(([s,e])=>[Math.max(c.start,s),Math.min(c.start+c.duration,e)]):[]}));
+ if(!cuts.length)return {project:result,removed:0,cuts};
+ const updated=[];
+ for(const c of result.clips){
+  if(c.track==='text'){
+   const start=silenceTimeAfterCuts(c.start,cuts),end=silenceTimeAfterCuts(c.start+c.duration,cuts);
+   if(end-start<.2-1e-8)continue;
+   if(cuts.some(([s,e])=>s<=c.start&&e>c.start))c.fadeIn=0;
+   if(cuts.some(([s,e])=>s<c.start+c.duration&&e>=c.start+c.duration))c.fadeOut=0;
+   c.start=start;c.duration=end-start;c.fadeIn=Math.min(c.fadeIn,c.duration);c.fadeOut=Math.min(c.fadeOut,c.duration);updated.push(c);continue;
+  }
+  if(c.track!==track){updated.push(c);continue}
+  const originalStart=c.start,originalEnd=c.start+c.duration;let spans=[[originalStart,originalEnd]];
+  const ownCuts=mergeSilenceRanges(detections.filter(d=>d.clipId===c.id).flatMap(d=>d.ranges.map(([s,e])=>[Math.max(originalStart,s),Math.min(originalEnd,e)])));
+  for(const [start,end]of ownCuts)spans=spans.flatMap(([s,e])=>e<=start||s>=end?[[s,e]]:[[s,Math.min(e,start)],[Math.max(s,end),e]].filter(([a,b])=>b-a>1e-8));
+  spans.forEach(([start,end],index)=>{
+   const piece=JSON.parse(JSON.stringify(c));if(index){let suffix=index;do{piece.id=c.id+'-silence-'+suffix++}while(ids.has(piece.id));ids.add(piece.id)}
+   piece.start=silenceTimeAfterCuts(start,cuts);piece.duration=end-start;
+   if(piece.type==='video'||piece.type==='audio')piece.inPoint=c.inPoint+(start-originalStart)*c.speed;
+   piece.fadeIn=Math.abs(start-originalStart)<1e-8?Math.min(c.fadeIn,piece.duration):0;
+   piece.fadeOut=Math.abs(end-originalEnd)<1e-8?Math.min(c.fadeOut,piece.duration):0;updated.push(piece);
+  });
+ }
+ result.clips=updated.sort((a,b)=>a.start-b.start);return {project:result,removed:cuts.reduce((sum,[s,e])=>sum+e-s,0),cuts};
+}
+// Embedded unit tests: evaluate this pure-function section in Node, then call runSilenceUnitTests().
+function runSilenceUnitTests(){
+ const passed=[],check=(ok,name)=>{if(!ok)throw new Error('無音カットのテスト失敗：'+name);passed.push(name)},near=(a,b)=>Math.abs(a-b)<1e-8;
+ const frames=[...Array(10).fill(-15),...Array(30).fill(-60),...Array(10).fill(-15),...Array(20).fill(-60)];
+ const ranges=silenceRangesFromDb(frames,{threshold:-40,minDuration:.5,padding:.1});
+ check(ranges.length===1&&near(ranges[0][0],.3)&&near(ranges[0][1],.7),'最小無音長と前後の余白');
+ check(silenceRangesFromDb(Array(25).fill(-60),{minDuration:.5,padding:0}).length===1,'末尾の無音と最小長の境界');
+ check(silenceRangesFromDb(Array(25).fill(-60),{minDuration:.5,padding:.3}).length===0,'余白で消える区間を除外');
+ check(silenceRangesFromDb(Array(40).fill(-40),{threshold:-40}).length===0,'しきい値と同じ音量は無音にしない');
+ check(silenceAutoThreshold(Array(20).fill(-90))===-55&&silenceAutoThreshold(Array(20).fill(-10))===-25&&silenceAutoThreshold([-65,-60,-50,-40,-10])===-55,'自動しきい値の百分位と上下限');
+ const mapped=mapSilenceRanges([[5,9]],{start:10,inPoint:3,speed:2});check(mapped[0][0]===11&&mapped[0][1]===13,'素材開始位置と速度からタイムラインへ変換');
+ const video={id:'video',type:'video',track:'main',start:0,inPoint:3,duration:10,speed:2,volume:.7,fadeIn:.4,fadeOut:.5,filter:{contrast:130},transform:{scale:1.2}},caption={id:'caption',type:'text',track:'text',caption:true,start:1,inPoint:0,duration:3.5,speed:1,fadeIn:.1,fadeOut:.2,text:{content:'字幕'}},bgm={...video,id:'bgm',type:'audio',track:'audio',start:0,inPoint:0,duration:20,speed:1},later={...video,id:'later',start:10,duration:2},covered={...caption,id:'covered',start:2.1,duration:1.5},tiny={...caption,id:'tiny',start:3.9,duration:.2};
+ const input={aspect:'9:16',clips:[video,caption,bgm,later,covered,tiny]},before=JSON.stringify(input),result=rippleApplySilence(input,[{clipId:'video',ranges:[[2,4],[6,7]]}],'main'),pieces=result.project.clips.filter(c=>c.type==='video'&&c.id!=='later'),text=result.project.clips.find(c=>c.id==='caption');
+ check(result.removed===3&&pieces.length===3,'無音片を削除して映像を分割');
+ check(pieces[0].start===0&&pieces[1].start===2&&pieces[2].start===4&&result.project.clips.find(c=>c.id==='later').start===7,'後続クリップを含め隙間を閉じる');
+ check(pieces.map(c=>c.inPoint).join(',')==='3,11,17'&&pieces.every(c=>c.speed===2&&c.volume===.7&&c.filter.contrast===130&&c.transform.scale===1.2),'素材位置と編集設定を維持');
+ check(pieces[0].fadeIn===.4&&pieces[0].fadeOut===0&&pieces[1].fadeIn===0&&pieces[1].fadeOut===0&&pieces[2].fadeIn===0&&pieces[2].fadeOut===.5,'分割片のフェード');
+ check(text.start===1&&near(text.duration,1.5)&&text.caption&&!result.project.clips.some(c=>c.id==='covered'||c.id==='tiny'),'カットをまたぐ字幕をトリムし短い字幕を削除');
+ check(JSON.stringify(result.project.clips.find(c=>c.id==='bgm'))===JSON.stringify(bgm),'映像を切っても音楽は変更しない');
+ check(JSON.stringify(input)===before,'元のプロジェクトは変更しない');
+ const audio=rippleApplySilence(input,[{clipId:'bgm',ranges:[[2,4]]}],'audio');
+ check(audio.project.clips.filter(c=>c.track==='audio').length===2&&JSON.stringify(audio.project.clips.find(c=>c.id==='video'))===JSON.stringify(video),'音声トラックを対象にした場合も映像は保持');
+ check(new Set(result.project.clips.map(c=>c.id)).size===result.project.clips.length,'分割後の識別子は重複しない');
+ return passed;
+}
+// ── 12. Shared decode cache and responsive silence analysis ──────────
+function assertAudioJob(job){if(job===captionJob)assertCaptionJob(job);else if(job===silenceJob)assertSilenceJob(job);else if(job)throw new DOMException('音声の取り出しを中止しました','AbortError')}
+function audioExtractionProgress(job,percent){assertAudioJob(job);const caption=job===captionJob;$(caption?'captionStage':'silenceStage').textContent=`音声を取り出し中 ${Math.floor(percent)}%（Safari 向けの方法）`;$(caption?'captionProgress':'silenceProgress').value=caption?percent:percent/100}
+function bufferHasEnergy(buffer){for(let c=0;c<buffer.numberOfChannels;c++){const data=buffer.getChannelData(c);for(let i=0;i<data.length;i++)if(Math.abs(data[i])>1e-8)return true}return false}
+async function captureMediaAudio(asset,ctx,job){
+ const ownUrl=asset.url?null:URL.createObjectURL(asset.file);
+ const el=document.createElement(asset.type==='audio'?'audio':'video');el.preload='auto';el.playsInline=true;el.preservesPitch=false;el.webkitPreservesPitch=false;
+ el.style.cssText='position:fixed;width:1px;height:1px;opacity:0;pointer-events:none';el.setAttribute('aria-hidden','true');document.body.append(el);
+ let source,tap,gain,moduleUrl,timer,settled=false,started=false,capturing=false,actualRate=1,lastTime=0,lastAdvance=Date.now(),deadline=Date.now()+30000;
+ const chunks=[];let sampleCount=0;
+ const append=data=>{if(data?.length){chunks.push(data);sampleCount+=data.length}};
+ return new Promise((resolve,reject)=>{
+  const cleanup=()=>{clearInterval(timer);if(job?.audioCancel===cancel)job.audioCancel=null;el.onloadedmetadata=el.onplaying=el.onended=el.onerror=el.onwaiting=el.onpause=null;el.pause();el.removeAttribute('src');el.load();el.remove();if(ownUrl)URL.revokeObjectURL(ownUrl);if(tap){tap.onaudioprocess=null;if(tap.port)tap.port.onmessage=null}for(const node of [source,tap,gain])try{node?.disconnect()}catch{}if(moduleUrl)URL.revokeObjectURL(moduleUrl)};
+  const fail=error=>{if(settled)return;settled=true;cleanup();reject(error)};
+  const cancel=()=>fail(new DOMException('音声の取り出しを中止しました','AbortError'));
+  const finish=()=>{if(settled)return;settled=true;
+   try{
+    if(!sampleCount)throw new Error('再生から音声サンプルを取得できませんでした');
+    const samples=new Float32Array(sampleCount);let offset=0;for(const chunk of chunks){samples.set(chunk,offset);offset+=chunk.length}
+    // createBuffer is the browser's authority on supported sample rates (Safari varies).
+    let plan=captureSamplePlan(ctx.sampleRate,actualRate,sampleCount),buffer;
+    try{buffer=ctx.createBuffer(1,plan.length,plan.bufferRate)}catch{plan=captureSamplePlan(ctx.sampleRate,actualRate,sampleCount,ctx.sampleRate);buffer=ctx.createBuffer(1,plan.length,plan.bufferRate)}
+    resampleCapturedSamples(samples,plan,buffer.getChannelData(0));
+    cleanup();resolve(buffer);
+   }catch(error){cleanup();reject(error)}
+  };
+  if(job)job.audioCancel=cancel;
+  timer=setInterval(()=>{try{assertAudioJob(job);if(el.currentTime>lastTime+.01){lastTime=el.currentTime;lastAdvance=Date.now()}if(Number.isFinite(el.duration)&&el.duration>0)audioExtractionProgress(job,Math.min(100,el.currentTime/el.duration*100));if(started&&!draining&&(el.ended||el.currentTime>=el.duration)){drain();return}if(Date.now()>deadline||Date.now()-lastAdvance>30000)fail(new Error('音声の再生キャプチャがタイムアウトしました'))}catch(error){fail(error)}},200);
+  let draining=false;
+  const drain=()=>{if(draining||settled)return;draining=true;deadline=Math.min(deadline,Date.now()+5000);el.pause();if(tap?.port){tap.port.postMessage('stop')}else finish()};
+  el.onended=drain;el.onerror=()=>fail(new Error('素材を再生できませんでした：'+(el.error?.message||el.error?.code||'不明な再生エラー')));
+  el.onloadedmetadata=async()=>{
+   try{
+    if(settled)return;el.onloadedmetadata=null;assertAudioJob(job);if(!Number.isFinite(el.duration)||el.duration<=0)throw new Error('素材の長さを取得できませんでした');
+    for(const rate of [4,2,1]){try{el.playbackRate=rate;const read=el.playbackRate;if(Math.abs(read-rate)<.01){actualRate=read;break}}catch{}}
+    actualRate=el.playbackRate;if(!(actualRate>0))throw new Error('再生速度を設定できませんでした');
+    source=ctx.createMediaElementSource(el);gain=ctx.createGain();gain.gain.value=0;gain.connect(ctx.destination);
+    if(ctx.audioWorklet&&window.AudioWorkletNode){
+     try{
+      moduleUrl=URL.createObjectURL(new Blob([`class MonoCapture extends AudioWorkletProcessor{constructor(){super();this.running=false;this.port.onmessage=({data})=>{this.running=data==='start';if(data==='stop')this.port.postMessage({done:true})}}process(inputs){const channels=inputs[0];if(this.running&&channels?.length){const mono=new Float32Array(channels[0].length);for(const channel of channels)for(let i=0;i<mono.length;i++)mono[i]+=channel[i]/channels.length;this.port.postMessage({samples:mono},[mono.buffer])}return true}}registerProcessor('mono-capture',MonoCapture);`],{type:'text/javascript'}));
+      await ctx.audioWorklet.addModule(moduleUrl);if(settled)return;
+      tap=new AudioWorkletNode(ctx,'mono-capture');tap.port.onmessage=({data})=>{if(settled)return;if(data.done)finish();else append(data.samples)};
+     }catch(error){if(settled)return;console.debug('[audio] worklet fallback',error)}
+    }
+    if(!tap){tap=ctx.createScriptProcessor(4096,2,1);tap.onaudioprocess=event=>{if(!capturing||el.paused||settled)return;const input=event.inputBuffer,mono=new Float32Array(input.length);for(let c=0;c<input.numberOfChannels;c++){const channel=input.getChannelData(c);for(let i=0;i<mono.length;i++)mono[i]+=channel[i]/input.numberOfChannels}append(mono)}}
+    source.connect(tap);tap.connect(gain);await ctx.resume();if(settled)return;assertAudioJob(job);
+    el.onwaiting=()=>{capturing=false;tap.port?.postMessage('suspend')};
+    el.onplaying=()=>{capturing=true;tap.port?.postMessage('start');if(started)return;started=true;lastAdvance=Date.now();deadline=Date.now()+Math.max(30000,el.duration/actualRate*2000+15000)};
+    await el.play();if(settled)return;
+   }catch(error){fail(error)}
+  };
+  el.src=asset.url||ownUrl;
+ });
+}
+async function decodeMediaAudio(asset,decoder,job){
+ if(decodedAudioCache.has(asset.id)){const cached=decodedAudioCache.get(asset.id);if(!cached.audioJob?.cancelled)return cached;decodedAudioCache.delete(asset.id)}
+ const loading=(async()=>{
+  let decodeError;
+  try{const buffer=await decoder.decodeAudioData(await asset.file.arrayBuffer());assertAudioJob(job);if(bufferHasEnergy(buffer))return buffer;decodeError=new Error('音声サンプルが無音でした')}catch(error){if(error.name==='AbortError')throw error;decodeError=error}
+  assertAudioJob(job);
+  try{audioExtractionProgress(job,0);return await captureMediaAudio(asset,decoder,job)}catch(error){if(error.name==='AbortError')throw error;throw new Error(`この動画の音声を取り出せませんでした（decodeAudioData: ${decodeError.name} ${decodeError.message}／再生キャプチャ: ${error.name} ${error.message}）`)}
+ })();loading.audioJob=job;decodedAudioCache.set(asset.id,loading);
+ try{return await loading}catch(error){if(decodedAudioCache.get(asset.id)===loading)decodedAudioCache.delete(asset.id);throw error}
+}
+function clearSilencePreview(){silencePreview=null;const apply=$('applySilence');if(apply)apply.disabled=true;const summary=$('silenceSummary');if(summary)summary.textContent='検出後、赤い範囲を確認してカットを適用してください。';document.querySelectorAll('.silence-overlay').forEach(el=>el.remove())}
+function renderSilenceOverlays(){if(!silencePreview)return;for(const detection of silencePreview.detections){const clip=project.clips.find(c=>c.id===detection.clipId),block=document.querySelector(`.clip[data-id="${detection.clipId}"]`);if(!clip||!block)continue;for(const [start,end]of detection.ranges){const overlay=document.createElement('div');overlay.className='silence-overlay';overlay.style.left=((start-clip.start)*zoom)+'px';overlay.style.width=((end-start)*zoom)+'px';overlay.title='無音としてカットする範囲';block.append(overlay)}}}
+function updateSilenceControls(){clearSilencePreview();$('silenceThreshold').disabled=$('silenceAuto').checked;$('silenceThresholdValue').textContent=$('silenceAuto').checked?'自動':$('silenceThreshold').value+' dB';$('silenceMinimumValue').textContent=Number($('silenceMinimum').value).toFixed(1)+' 秒';$('silencePaddingValue').textContent=Number($('silencePadding').value).toFixed(2)+' 秒';$('silenceError').textContent=''}
+function assertSilenceJob(job){if(job.cancelled||silenceJob!==job||snapshot()!==job.before)throw new DOMException('無音検出を中止しました','AbortError')}
+async function silenceFrameDb(buffer,clip,job){
+ const start=Math.max(0,clip.inPoint),end=Math.min(buffer.duration,clip.inPoint+clip.duration*clip.speed);if(end<=start)return null;
+ const rate=buffer.sampleRate,frameSamples=Math.max(1,Math.round(rate*.02)),offset=Math.floor(start*rate),limit=Math.min(buffer.length,Math.ceil(end*rate)),channels=Array.from({length:buffer.numberOfChannels},(_,i)=>buffer.getChannelData(i)),frames=[];
+ for(let base=offset;base<limit;base+=frameSamples){let energy=0;const stop=Math.min(limit,base+frameSamples);for(let i=base;i<stop;i++){let sample=0;for(const channel of channels)sample+=channel[i];sample/=channels.length;energy+=sample*sample}frames.push(10*Math.log10(Math.max(1e-12,energy/(stop-base))));if(frames.length%200===0){await new Promise(resolve=>setTimeout(resolve,0));assertSilenceJob(job)}}
+ return {frames,start,duration:end-start,frameSeconds:frameSamples/rate};
+}
+function cancelSilenceDetection(){const job=silenceJob;if(!job)return;job.cancelled=true;job.audioCancel?.();silenceJob=null;$('silenceModal').classList.add('hidden');$('detectSilence').disabled=false;job.decoder?.close().catch(()=>{});toast('無音の検出をキャンセルしました')}
+async function detectSilence(){
+ if(silenceJob||captionJob||exportJob)return;finishProperty();pause();clearSilencePreview();$('silenceError').textContent='';
+ const job={cancelled:false,before:snapshot(),decoder:null,unavailable:new Set()},selection=selected;silenceJob=job;$('detectSilence').disabled=true;$('silenceModal').classList.remove('hidden');$('silenceProgress').value=0;
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('音声解析に対応していません');job.decoder=new AC();await job.decoder.resume();
+  const read=async clips=>{const available=[];for(let i=0;i<clips.length;i++){assertSilenceJob(job);if(job.unavailable.has(clips[i].mediaId))continue;$('silenceStage').textContent=`音声を読み込み中 ${i+1}/${clips.length} 素材`;$('silenceProgress').value=.35*(i+1)/Math.max(1,clips.length);await new Promise(resolve=>setTimeout(resolve,0));try{const buffer=await decodeMediaAudio(assets.get(clips[i].mediaId),job.decoder,job);assertSilenceJob(job);if(buffer.numberOfChannels)available.push({clip:clips[i],buffer})}catch(error){assertSilenceJob(job);(job.decodeErrors||(job.decodeErrors=[])).push(error.message||String(error));job.unavailable.add(clips[i].mediaId);console.debug('[silence] audio unavailable',clips[i].id,error)}}return available};
+  let targets=await read(project.clips.filter(c=>c.type==='video'&&c.track==='main')),track='main';
+  if(!targets.length){track='audio';targets=await read(project.clips.filter(c=>c.type==='audio'&&c.track==='audio'))}
+  const chosen=targets.find(item=>item.clip.id===selection),onlySelected=!!chosen;if(chosen)targets=[chosen];
+  if(!targets.length)throw new Error(job.decodeErrors?.length?job.decodeErrors.join('\n'):'音声付きのクリップがありません');
+  const detections=[],thresholds=[];
+  for(let i=0;i<targets.length;i++){
+   assertSilenceJob(job);$('silenceStage').textContent=`無音を解析中 ${i+1}/${targets.length} クリップ`;$('silenceProgress').value=.35+.65*i/targets.length;await new Promise(resolve=>setTimeout(resolve,0));
+   const {clip,buffer}=targets[i],analysis=await silenceFrameDb(buffer,clip,job);if(!analysis)continue;
+   const threshold=$('silenceAuto').checked?silenceAutoThreshold(analysis.frames):Number($('silenceThreshold').value);thresholds.push(threshold);
+   const relative=silenceRangesFromDb(analysis.frames,{threshold,minDuration:Number($('silenceMinimum').value),padding:Number($('silencePadding').value),frameSeconds:analysis.frameSeconds,duration:analysis.duration});
+   detections.push({clipId:clip.id,ranges:mapSilenceRanges(relative.map(([s,e])=>[analysis.start+s,analysis.start+e]),clip)});
+  }
+  assertSilenceJob(job);const result=rippleApplySilence(project,detections,track),count=detections.reduce((sum,d)=>sum+d.ranges.length,0),before=project.clips.filter(c=>c.track===track).reduce((end,c)=>Math.max(end,c.start+c.duration),0),after=Math.max(0,before-result.removed);
+  silencePreview={before:job.before,detections,track};renderTimeline();$('applySilence').disabled=!count;
+  $('silenceSummary').textContent=`無音 ${count} か所・合計 ${result.removed.toFixed(1)} 秒を検出（${track==='main'?'動画':'音声'}は ${before.toFixed(1)} 秒 → ${after.toFixed(1)} 秒）`+(onlySelected?'\n選択中のクリップのみを解析しました。':'\n対象トラックのすべての音声付きクリップを解析しました。')+($('silenceAuto').checked&&thresholds.length?(Math.min(...thresholds).toFixed(0)===Math.max(...thresholds).toFixed(0)?`\n自動しきい値：${Math.min(...thresholds).toFixed(0)} dB`:`\n自動しきい値：${Math.min(...thresholds).toFixed(0)}〜${Math.max(...thresholds).toFixed(0)} dB`):'');
+ }catch(error){if(error.name!=='AbortError'){console.debug('[silence] detection error',error);$('silenceError').textContent='無音を検出できませんでした。\n'+String(error?.message||error);toast('無音の検出に失敗しました。左パネルの詳細を確認してください。')}}
+ finally{try{job.decoder?.close().catch(()=>{})}catch{}if(silenceJob===job){silenceJob=null;$('silenceModal').classList.add('hidden');$('detectSilence').disabled=false}}
+}
+function applySilence(){if(!silencePreview||silenceJob||captionJob||exportJob)return;const preview=silencePreview;if(snapshot()!==preview.before){clearSilencePreview();toast('編集内容が変わったため、もう一度無音を検出してください');return}pause();const result=rippleApplySilence(project,preview.detections,preview.track);if(!result.removed)return;project=result.project;time=Math.max(0,Math.min(duration(),silenceTimeAfterCuts(time,result.cuts)));if(!getSelected())selected=null;commit();refresh();syncMedia();toast(`無音を ${result.removed.toFixed(1)} 秒カットしました`)}
+// ── 13. UI wiring and keyboard shortcuts ──────────────────────────────
+$('import').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('files').click()}};$('files').onchange=e=>{const list=Array.from(e.target.files||[]);if(!list.length){toast('ファイルが選ばれませんでした');return}toast(`${list.length} 個のファイルを読み込み中…`);importFiles(list).catch(err=>{console.error(err);toast('読み込み中にエラーが発生しました: '+(err?.message||err))});e.target.value=''};
+const drop=$('dropzone');drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};drop.ondragleave=()=>drop.classList.remove('over');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');importFiles(Array.from(e.dataTransfer.files))};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tabcontent').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+b.dataset.tab))});
+for(const [name,preset]of Object.entries(presets)){const b=document.createElement('button');b.className='preset';const art=document.createElement('div');art.className='preset-art';art.textContent='◒';const f={...filtersDefault(),...preset};art.style.filter=`brightness(${f.brightness}%) saturate(${f.saturation}%) contrast(${f.contrast}%) grayscale(${f.grayscale}%) sepia(${f.sepia}%)`;const label=document.createElement('span');label.textContent=name;b.append(art,label);b.onclick=()=>applyPreset(name);$('presetGrid').append(b)}
+$('addText').onclick=addText;$('undo').onclick=()=>restore(historyIndex-1);$('redo').onclick=()=>restore(historyIndex+1);$('aspect').onchange=e=>{if(exportJob){e.target.value=project.aspect;return}pause();project.aspect=e.target.value;setCanvasSize(720);commit();draw()};$('play').onclick=()=>{if(exportJob)return;playing?pause():play()};$('toStart').onclick=()=>{if(exportJob)return;pause();seek(0)};$('split').onclick=splitClip;$('delete').onclick=removeSelected;$('duplicate').onclick=duplicateSelected;$('zoom').oninput=e=>{zoom=Number(e.target.value);renderTimeline()};
+$('ruler').onpointerdown=e=>{if(exportJob||e.button!==0)return;e.preventDefault();pause();const ruler=$('ruler');ruler.setPointerCapture(e.pointerId);const seekEvent=ev=>seek((ev.clientX-ruler.getBoundingClientRect().left)/zoom);seekEvent(e);ruler.onpointermove=seekEvent;ruler.onpointerup=ruler.onpointercancel=()=>{ruler.onpointermove=null}};
+document.querySelectorAll('.lane').forEach(lane=>{lane.ondragover=e=>{if(exportJob)return;e.preventDefault();lane.classList.add('over')};lane.ondragleave=()=>lane.classList.remove('over');lane.ondrop=e=>{e.preventDefault();lane.classList.remove('over');if(exportJob)return;const id=e.dataTransfer.getData('application/x-reel-media'),a=assets.get(id);if(!a){if(e.dataTransfer.files.length)importFiles(Array.from(e.dataTransfer.files));return}const track=a.type==='audio'?'audio':'main';if(track!==lane.dataset.track){toast('素材に対応したトラックへドロップしてください');return}addClip(id,(e.clientX-lane.getBoundingClientRect().left)/zoom)};lane.onpointerdown=e=>{if(e.target===lane&&!exportJob){selectClip(null);seek((e.clientX-lane.getBoundingClientRect().left)/zoom)}}});
+$('export').onclick=openExport;$('startExport').onclick=startExport;$('cancelExport').onclick=()=>{if(exportJob)finishExport(true);else $('exportModal').classList.add('hidden')};
+document.addEventListener('keydown',e=>{if(silenceJob){if(e.key==='Escape')cancelSilenceDetection();e.preventDefault();return}if(captionJob){if(e.key==='Escape')cancelCaptionGeneration();e.preventDefault();return}const editing=e.target.closest('input,textarea,select,[contenteditable]');if(editing)return;if(exportJob){if(e.key==='Escape')finishExport(true);return}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();finishProperty();restore(historyIndex+(e.shiftKey?1:-1))}else if(e.code==='Space'){e.preventDefault();playing?pause():play()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){$('exportModal').classList.add('hidden');selectClip(null)}});
+window.addEventListener('dragover',e=>e.preventDefault());window.addEventListener('drop',e=>e.preventDefault());window.addEventListener('resize',renderTimeline);window.addEventListener('beforeunload',()=>{captionJob?.worker?.terminate();for(const p of players.values())destroyPlayer(p);for(const a of assets.values())releaseAsset(a)});
+$('detectSilence').onclick=detectSilence;$('applySilence').onclick=applySilence;$('cancelSilence').onclick=cancelSilenceDetection;for(const id of ['silenceThreshold','silenceMinimum','silencePadding','silenceAuto'])$(id).oninput=updateSilenceControls;
+$('generateCaptions').onclick=generateCaptions;$('cancelCaptions').onclick=cancelCaptionGeneration;
+const previewObserver=new ResizeObserver(fitPreview);previewObserver.observe(canvas.parentElement);
+setCanvasSize(720);commit();renderLibrary();refresh();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
