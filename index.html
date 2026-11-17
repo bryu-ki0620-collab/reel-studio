@@ -15,12 +15,12 @@ body{display:flex;flex-direction:column}header{flex:0 0 66px}#workspace{flex:1 1
 <body>
 <header><div class="brand"><span class="logo">◈</span>リールスタジオ</div><span class="tag">アイデアを、ひとつの動画に。</span><div class="divider"></div><select id="aspect" aria-label="アスペクト比"><option value="9:16">▯ 9:16</option><option value="16:9">▭ 16:9</option><option value="1:1">□ 1:1</option></select><div class="spacer"></div><button id="newProject">新規</button><button id="undo" class="icon" title="元に戻す（⌘/Ctrl+Z）">↶</button><button id="redo" class="icon" title="やり直す（⌘/Ctrl+Shift+Z）">↷</button><div class="divider"></div><button id="export" class="primary">↗ エクスポート</button></header>
 <main id="workspace">
-<aside id="left"><nav class="tabs"><button class="active" data-tab="media">メディア</button><button data-tab="text">テキスト</button><button data-tab="filters">フィルター</button><button data-tab="captions">キャプション</button><button data-tab="ai">AIツール</button></nav><div class="tabcontent" id="tab-media"><div class="dropzone" id="dropzone"><div class="importicon">⇧</div><label for="files" id="import" class="import-btn" role="button" tabindex="0">＋ ファイルを読み込む</label><p>ここにドラッグ＆ドロップ<br>動画・画像・オーディオ</p></div><input type="file" id="files" accept="video/*,image/*,audio/*,.mkv,.mov,.m4v,.mp3,.wav,.m4a,.ogg,.webm" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><div class="libraryheader"><span>プロジェクトの素材</span><span id="mediaCount">0 素材</span></div><div class="media-grid" id="mediaGrid"></div><p class="hint">＋ またはタイムラインへのドラッグで追加。<br>素材右上の × で素材と使用中のクリップを削除。</p></div><div class="tabcontent hidden" id="tab-text"><div class="eyebrow">文字のスタイル</div><h2 class="sectiontitle">言葉を重ねよう</h2><button id="addText" class="primary" style="width:100%">Ｔ テキストを追加</button><p class="hint">再生ヘッドの位置に3秒のテキストを追加します。右のパネルでスタイルを編集できます。</p></div><div class="tabcontent hidden" id="tab-filters"><div class="eyebrow">色と雰囲気</div><h2 class="sectiontitle">映像の雰囲気</h2><div class="presetgrid" id="presetGrid"></div><p class="hint">動画または画像のクリップを選択して適用。</p></div><div class="tabcontent hidden" id="tab-captions"><div class="eyebrow">自動キャプション</div><h2 class="sectiontitle">声を、ことばに。</h2><div class="caption-options"><label for="captionLanguage">言語</label><select id="captionLanguage"><option value="japanese">日本語</option><option value="english">英語</option><option value="auto">自動</option></select><label for="captionModel">モデル</label><select id="captionModel"><option value="onnx-community/whisper-base">標準 (whisper-base)</option><option value="onnx-community/whisper-small">高精度 (whisper-small)</option></select><label for="captionMax">1行の最大文字数</label><input id="captionMax" type="number" min="4" max="80" value="16"><label for="captionStyle">スタイル</label><select id="captionStyle"><option value="outline">白文字+黒縁</option><option value="yellow">黄色</option><option value="box">白地に黒文字</option></select></div><button id="generateCaptions" class="primary" style="width:100%;margin-top:20px;padding:13px 5px">自動キャプションを生成</button><p class="hint">初回は約80〜250MBのモデルをダウンロードします（精度設定・実行環境により増える場合があります）。この機能のみネット接続が必要です。音声は端末内で処理します。</p><p id="captionError" class="hint" role="status"></p><h3 class="sectiontitle" style="margin-top:23px">キャプション一括編集</h3><div id="captionList"></div></div><div class="tabcontent hidden" id="tab-ai"><h2 class="sectiontitle">無音カット</h2><p class="hint">話していない間を見つけて自動で切り詰めます</p><div class="control"><label for="silenceThreshold">無音と判定する音量（しきい値）<output id="silenceThresholdValue">自動</output></label><input id="silenceThreshold" type="range" min="-60" max="-20" step="1" value="-40" disabled></div><label class="silence-auto"><input id="silenceAuto" type="checkbox" checked>自動</label><p class="hint">自動では素材の静かな部分を基準に音量を調整します。</p><div class="control"><label for="silenceMinimum">最小の無音の長さ<output id="silenceMinimumValue">0.5 秒</output></label><input id="silenceMinimum" type="range" min="0.2" max="2.0" step="0.1" value="0.5"></div><div class="control"><label for="silencePadding">前後の余白<output id="silencePaddingValue">0.15 秒</output></label><input id="silencePadding" type="range" min="0" max="0.3" step="0.01" value="0.15"></div><label class="silence-auto"><input id="silenceSmooth" type="checkbox" checked>つなぎ目の音をなめらかにする</label><div class="silence-actions"><button id="detectSilence" class="primary">無音を検出</button><button id="applySilence" disabled>カットを適用</button></div><p id="silenceSummary" class="hint" role="status">検出後、赤い範囲を確認してカットを適用してください。</p><p id="silenceError" class="hint" role="alert"></p><p class="hint">BGM（オーディオトラック）は切らずにそのまま流れます</p><p class="hint">音声付きの映像がない場合はオーディオトラックを対象にします。選択中のクリップが対象に含まれる場合は、そのクリップのみを解析します。</p></div></aside>
+<aside id="left"><nav class="tabs"><button class="active" data-tab="media">メディア</button><button data-tab="text">テキスト</button><button data-tab="filters">フィルター</button><button data-tab="captions">キャプション</button><button data-tab="ai">AIツール</button></nav><div class="tabcontent" id="tab-media"><div class="dropzone" id="dropzone"><div class="importicon">⇧</div><label for="files" id="import" class="import-btn" role="button" tabindex="0">＋ ファイルを読み込む</label><p>ここにドラッグ＆ドロップ<br>動画・画像・オーディオ</p></div><input type="file" id="files" accept="video/*,image/*,audio/*,.mkv,.mov,.m4v,.mp3,.wav,.m4a,.ogg,.webm" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><div class="libraryheader"><span>プロジェクトの素材</span><span id="mediaCount">0 素材</span></div><div class="media-grid" id="mediaGrid"></div><p class="hint">＋ またはタイムラインへのドラッグで追加。<br>素材右上の × で素材と使用中のクリップを削除。</p></div><div class="tabcontent hidden" id="tab-text"><div class="eyebrow">文字のスタイル</div><h2 class="sectiontitle">言葉を重ねよう</h2><button id="addText" class="primary" style="width:100%">Ｔ テキストを追加</button><p class="hint">再生ヘッドの位置に3秒のテキストを追加します。右のパネルでスタイルを編集できます。</p></div><div class="tabcontent hidden" id="tab-filters"><div class="eyebrow">色と雰囲気</div><h2 class="sectiontitle">映像の雰囲気</h2><div class="presetgrid" id="presetGrid"></div><p class="hint">動画または画像のクリップを選択して適用。</p></div><div class="tabcontent hidden" id="tab-captions"><div class="eyebrow">自動キャプション</div><h2 class="sectiontitle">声を、ことばに。</h2><div class="caption-options"><label for="captionLanguage">言語</label><select id="captionLanguage"><option value="japanese">日本語</option><option value="english">英語</option><option value="auto">自動</option></select><label for="captionModel">モデル</label><select id="captionModel"><option value="onnx-community/whisper-base">標準（速い・約80MB）</option><option value="onnx-community/whisper-small" selected>高精度（おすすめ・約250MB）</option><option id="captionTurbo" value="onnx-community/whisper-large-v3-turbo">最高精度（GPU必須・大容量）</option></select><p id="captionGpuNote" class="hint"></p><label for="captionDictionary">用語辞書（1行に「誤り→正しい」）</label><textarea id="captionDictionary" placeholder="客書→字幕"></textarea><label for="captionMax">1行の最大文字数</label><input id="captionMax" type="number" min="4" max="80" value="16"><label for="captionStyle">スタイル</label><select id="captionStyle"><option value="outline">白文字+黒縁</option><option value="yellow">黄色</option><option value="box">白地に黒文字</option></select></div><button id="generateCaptions" class="primary" style="width:100%;margin-top:20px;padding:13px 5px">自動キャプションを生成</button><p id="captionModelHint" class="hint"></p><p id="captionError" class="hint" role="status"></p><div class="caption-options"><label for="captionSearch">一括置換</label><input id="captionSearch" placeholder="検索" aria-label="検索"><input id="captionReplacement" placeholder="置換" aria-label="置換"><button id="replaceCaptions" style="margin-top:8px">すべて置換</button></div><h3 class="sectiontitle" style="margin-top:23px">キャプション一括編集</h3><div id="captionList"></div></div><div class="tabcontent hidden" id="tab-ai"><h2 class="sectiontitle">無音カット</h2><p class="hint">話していない間を見つけて自動で切り詰めます</p><div class="control"><label for="silenceThreshold">無音と判定する音量（しきい値）<output id="silenceThresholdValue">自動</output></label><input id="silenceThreshold" type="range" min="-60" max="-20" step="1" value="-40" disabled></div><label class="silence-auto"><input id="silenceAuto" type="checkbox" checked>自動</label><p class="hint">自動では素材の静かな部分を基準に音量を調整します。</p><div class="control"><label for="silenceMinimum">最小の無音の長さ<output id="silenceMinimumValue">0.5 秒</output></label><input id="silenceMinimum" type="range" min="0.2" max="2.0" step="0.1" value="0.5"></div><div class="control"><label for="silencePadding">前後の余白<output id="silencePaddingValue">0.15 秒</output></label><input id="silencePadding" type="range" min="0" max="0.3" step="0.01" value="0.15"></div><label class="silence-auto"><input id="silenceSmooth" type="checkbox" checked>つなぎ目の音をなめらかにする</label><div class="silence-actions"><button id="detectSilence" class="primary">無音を検出</button><button id="applySilence" disabled>カットを適用</button></div><p id="silenceSummary" class="hint" role="status">検出後、赤い範囲を確認してカットを適用してください。</p><p id="silenceError" class="hint" role="alert"></p><p class="hint">BGM（オーディオトラック）は切らずにそのまま流れます</p><p class="hint">音声付きの映像がない場合はオーディオトラックを対象にします。選択中のクリップが対象に含まれる場合は、そのクリップのみを解析します。</p></div></aside>
 <section id="center"><div class="previewtop"><span>プレビュー</span><span id="previewInfo">9:16 · 30 fps</span></div><div class="canvas-wrap"><canvas id="preview" width="720" height="1280"></canvas></div><div class="transport"><button id="toStart" title="先頭へ">⏮</button><button id="play" title="再生／一時停止（スペース）">▶</button><span id="timeDisplay" class="time">00:00.00 / 00:00.00</span></div></section>
 <aside id="right"><h2>クリップの設定</h2><div id="properties"></div></aside>
 </main>
 <section id="timeline"><div class="timeline-tools"><button id="split">✂ 分割</button><button id="duplicate">▣ 複製</button><button id="delete">⌫ 削除</button><span class="hint" id="selectionInfo">クリップを選択</span><div class="spacer"></div><span class="hint">吸着 オン</span><div class="divider"></div><label class="zoom">− <input id="zoom" type="range" min="20" max="200" value="65" aria-label="タイムラインのズーム">＋</label></div><div class="timeline-body"><div class="tracklabels"><div class="tracklabel">▧ 映像</div><div class="tracklabel">Ｔ テキスト</div><div class="tracklabel">♫ オーディオ</div></div><div id="timelineScroll"><div id="timelineContent"><div id="ruler"></div><div class="lane" data-track="main"></div><div class="lane" data-track="text"></div><div class="lane" data-track="audio"></div><div id="playhead"></div></div></div></div><div class="statusbar"><span>ローカル編集 · ファイルはアップロードされません</span><span id="autosaveStatus" role="status">保存中…</span><span>スペース：再生／停止　·　⌘/Ctrl+Z：元に戻す　·　Delete：削除</span></div></section>
-<div id="silenceModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="silenceTitle"><div class="modal"><h2 id="silenceTitle">無音を検出中</h2><p id="silenceStage" class="hint" role="status">音声を準備中…</p><progress id="silenceProgress" value="0" max="1"></progress><div class="modal-actions"><button id="cancelSilence">キャンセル</button></div></div></div><div id="captionModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="captionTitle"><div class="modal"><div class="eyebrow">端末内の音声認識</div><h2 id="captionTitle">自動キャプションを生成</h2><p class="hint">初回は約80〜250MB以上のダウンロードが必要です。1分の音声で約1〜3分かかります。完了までこのタブを開いてください。</p><p id="captionStage" class="caption-status" role="status">準備中…</p><progress id="captionProgress" max="100" value="0"></progress><p id="captionDetail" class="hint"></p><div class="modal-actions"><button id="cancelCaptions">キャンセル</button></div></div></div>
+<div id="silenceModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="silenceTitle"><div class="modal"><h2 id="silenceTitle">無音を検出中</h2><p id="silenceStage" class="hint" role="status">音声を準備中…</p><progress id="silenceProgress" value="0" max="1"></progress><div class="modal-actions"><button id="cancelSilence">キャンセル</button></div></div></div><div id="captionModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="captionTitle"><div class="modal"><div class="eyebrow">端末内の音声認識</div><h2 id="captionTitle">自動キャプションを生成</h2><p id="captionModelSize" class="hint"></p><p id="captionStage" class="caption-status" role="status">準備中…</p><progress id="captionProgress" max="100" value="0"></progress><p id="captionDetail" class="hint"></p><div class="modal-actions"><button id="cancelCaptions">キャンセル</button></div></div></div>
 <div id="exportModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="exportTitle"><div class="modal"><div class="eyebrow">動画を完成させよう</div><h2 id="exportTitle">動画を書き出す</h2><p class="hint">タイムラインを実時間で録画します。書き出し中はこのタブを開いたままにしてください。</p><label for="resolution">解像度（短辺）</label><select id="resolution"><option value="720">720p · 軽量</option><option value="1080">1080p · 高画質</option></select><p class="hint">30 fps · ブラウザーに応じて MP4 / WebM</p><div id="exportProgress" class="hidden"><progress id="progress" value="0" max="1"></progress><p id="progressText" class="hint">準備中…</p></div><div class="modal-actions"><button id="cancelExport">閉じる</button><button id="startExport" class="primary">書き出し開始</button></div></div></div><div id="toast" class="hidden" role="status"></div>
 <script>
 'use strict';
@@ -211,14 +211,17 @@ async function createSpeechEngine(config,progress){
  env.backends.onnx.wasm.numThreads=globalThis.crossOriginIsolated?Math.min(4,navigator.hardwareConcurrency||1):1;
  env.backends.onnx.wasm.proxy=false;
  const device=config.device||(navigator.gpu?'webgpu':'wasm');
- const dtype=device==='webgpu'?{encoder_model:'fp32',decoder_model_merged:'q4'}:'q8';
+ const turbo=config.model==='onnx-community/whisper-large-v3-turbo';
+ if(turbo&&device!=='webgpu')throw new Error('最高精度にはGPUが必要です。「高精度」を選んでください。');
+ let dtype=device==='webgpu'?{encoder_model:'fp32',decoder_model_merged:'q4'}:'q8';
+ if(turbo){const adapter=await navigator.gpu?.requestAdapter();if(!adapter)throw new Error('GPUを利用できません。「高精度」を選んでください。');dtype={encoder_model:adapter.features.has('shader-f16')?'fp16':'q4',decoder_model_merged:'q4'}}
  console.debug('[captions] model load start',{device,dtype,threads:env.backends.onnx.wasm.numThreads});
  const recognizer=await pipeline('automatic-speech-recognition',config.model,{device,dtype,progress_callback:progress});
  console.debug('[captions] model ready',device);
  return {device,async transcribe(samples){
   console.debug('[captions] inference start',device,samples.length,samples.length/16000);
   let lastUpdate=0;const notify=()=>{const now=Date.now();if(now-lastUpdate>=500){lastUpdate=now;progress({status:'transcription-progress'})}};
-  const options={task:'transcribe',return_timestamps:true,chunk_length_s:30,stride_length_s:5,streamer:{put:notify,end:notify}};
+  const options={task:'transcribe',return_timestamps:true,...(samples.length>30*16000?{chunk_length_s:30,stride_length_s:5}:{}),streamer:{put:notify,end:notify}};
   if(config.language!=='auto')options.language=config.language;
   const result=await recognizer(samples,options);console.debug('[captions] inference complete',device,result.chunks?.length||0);return result;
  },async dispose(){await recognizer.dispose()}};
@@ -305,7 +308,7 @@ async function createCaptionRunner(job,config,onProgress){
  };
  const preferred=config.device||(navigator.gpu?'webgpu':'wasm');
  console.debug('[captions] main-thread load',preferred);
- try{engine=await loadMain(preferred)}catch(error){assertCaptionJob(job);if(preferred==='wasm')throw error;console.debug('[captions] main GPU load failed; load WASM',error.message);engine=await loadMain('wasm')}
+ try{engine=await loadMain(preferred)}catch(error){assertCaptionJob(job);if(config.model==='onnx-community/whisper-large-v3-turbo')throw new Error('GPUで最高精度モデルを実行できませんでした。「高精度」を選んでください。');if(preferred==='wasm')throw error;console.debug('[captions] main GPU load failed; load WASM',error.message);engine=await loadMain('wasm')}
  assertCaptionJob(job);
  return {device:engine.device,kind:'main',transcribe(samples,timeoutMs){
   if(disposed)return Promise.reject(new Error('音声認識は終了しています'));
@@ -315,7 +318,7 @@ async function createCaptionRunner(job,config,onProgress){
 }
 async function transcribeCaptionClip(job,state,samples,config,index,total,retrySamples){
  const started=Date.now(),audioSeconds=samples.length/16000;let retryLabel='';
- const update=()=>{if(captionJob===job&&!job.cancelled){$('captionStage').textContent=`${retryLabel||('文字起こし中 '+(index+1)+'/'+total+' クリップ')} · ${Math.floor((Date.now()-started)/1000)} 秒経過`;$('captionDetail').textContent='1分の音声で約1〜3分かかります'}};
+ const update=()=>{if(captionJob===job&&!job.cancelled){$('captionStage').textContent=`${retryLabel||('文字起こし中 '+(index+1)+'/'+total+' 区間')} · ${Math.floor((Date.now()-started)/1000)} 秒経過`;$('captionDetail').textContent='1分の音声で約1〜3分かかります'}};
  update();const clock=setInterval(update,1000);
  try{
   job.inferenceActivity=Date.now();
@@ -324,6 +327,7 @@ async function transcribeCaptionClip(job,state,samples,config,index,total,retryS
   try{return await state.runner.transcribe(samples,Math.max(gpu?60:180,(gpu?8:24)*audioSeconds)*1000)}
   catch(error){
    assertCaptionJob(job);
+   if(config.model==='onnx-community/whisper-large-v3-turbo')throw new Error('GPUで最高精度モデルを実行できませんでした。「高精度」を選んでください。');
    if(!gpu){
     if(state.runner.kind!=='worker')throw error;
     console.debug('[captions] CPU worker failed; main-thread retry',error.message);
@@ -352,10 +356,78 @@ async function captionSamples(clip,decoded,job){
  assertCaptionJob(job);const start=clamp(clip.inPoint,0,buffer.duration),end=Math.min(buffer.duration,clip.inPoint+clip.duration*clip.speed);
  if(end-start<.05||!buffer.numberOfChannels){job.skipped++;return null}
  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!Offline)throw new Error('このブラウザーは音声のリサンプリングに対応していません');
- const offline=new Offline(1,Math.ceil((end-start)*16000),16000),source=offline.createBufferSource();source.buffer=buffer;source.connect(offline.destination);source.start(0,start,end-start);
- const rendered=await offline.startRendering();assertCaptionJob(job);const samples=rendered.getChannelData(0);console.debug('[captions] audio ready',samples.length,'samples');let energy=0;for(let i=0;i<samples.length;i++)energy+=samples[i]*samples[i];if(energy/samples.length<1e-16){job.skipped++;job.silent=(job.silent||0)+1;return null}return samples;
+ const offline=new Offline(1,Math.ceil((end-start)*16000),16000),source=offline.createBufferSource();source.buffer=buffer;const highpass=offline.createBiquadFilter();highpass.type='highpass';highpass.frequency.value=80;highpass.Q.value=.707;source.connect(highpass);highpass.connect(offline.destination);source.start(0,start,end-start);
+ const rendered=await offline.startRendering();assertCaptionJob(job);const samples=rendered.getChannelData(0);console.debug('[captions] audio ready',samples.length,'samples');let energy=0;for(let i=0;i<samples.length;i++)energy+=samples[i]*samples[i];if(energy/samples.length<1e-16){job.skipped++;job.silent=(job.silent||0)+1;return null}const gain=captionNormalizationGain(samples);for(let i=0;i<samples.length;i++)samples[i]=Math.max(-1,Math.min(1,samples[i]*gain));return samples;
 }
-function cleanCaption(text){return String(text||'').replace(/(?:\(|（|\[|【)\s*(?:音楽|拍手|無音|笑い|雑音|music|applause|silence|laughter|noise)\s*(?:\)|）|\]|】)/giu,'').trim()}
+// ── 9a. Pure caption accuracy helpers ───────────────────────────────
+function captionFrameDb(samples,rate=16000,frameSeconds=.02){
+ const size=Math.max(1,Math.round(rate*frameSeconds)),frames=[];
+ for(let start=0;start<samples.length;start+=size){let energy=0;const end=Math.min(samples.length,start+size);for(let i=start;i<end;i++)energy+=samples[i]*samples[i];frames.push(10*Math.log10(Math.max(1e-12,energy/(end-start))))}return frames;
+}
+function captionNormalizationGain(samples){
+ if(!samples.length)return 1;
+ const frames=captionFrameDb(samples);let loudest=-120;for(const db of frames)loudest=Math.max(loudest,db);
+ const threshold=Math.max(-65,Math.min(silenceAutoThreshold(frames),loudest-10));let peak=0,energy=0,count=0;
+ for(let i=0;i<samples.length;i++){const value=samples[i];peak=Math.max(peak,Math.abs(value));if(frames[Math.floor(i/320)]>=threshold){energy+=value*value;count++}}
+ if(!peak||!count||!energy)return 1;
+ // RMS targets speech loudness; the peak target takes precedence for transients.
+ const desired=Math.min(.1/Math.sqrt(energy/count),10**(-3/20)/peak);
+ return Math.min(.999/peak,Math.max(.5,Math.min(20,desired)));
+}
+function captionSpeechRegions(frames,{frameSeconds=.02,duration=frames.length*frameSeconds}={}){
+ const silent=silenceRangesFromDb(frames,{threshold:silenceAutoThreshold(frames),minDuration:0,padding:0,frameSeconds,duration}),speech=[];let cursor=0;
+ for(const [start,end]of silent){if(start>cursor)speech.push([cursor,start]);cursor=end}if(cursor<duration)speech.push([cursor,duration]);
+ const merged=[];for(const [start,end]of speech){const last=merged.at(-1);if(last&&start-last[1]<.6-1e-9)last[1]=end;else merged.push([start,end])}
+ // Reject clicks before padding, then combine any pads that touch.
+ const padded=[];for(const [start,end]of merged){if(end-start<.3-1e-9)continue;const a=Math.max(0,start-.2),b=Math.min(duration,end+.2),last=padded.at(-1);if(last&&a<=last[1])last[1]=b;else padded.push([a,b])}
+ const regions=[];for(const [a,b]of padded){let start=a;
+  while(b-start>28+1e-9){const limit=start+28;let split=limit,quiet=Infinity;
+   for(let i=Math.ceil((limit-3)/frameSeconds);i<=Math.floor(limit/frameSeconds);i++){const t=i*frameSeconds;if(t<=start+.3||b-t<.3)continue;if(frames[i]<=quiet){quiet=frames[i];split=t}}
+   regions.push([start,split]);start=split;
+  }if(b-start>=.3-1e-9)regions.push([start,b]);
+ }return regions;
+}
+function parseCaptionDictionary(value){
+ const entries=[];for(const line of String(value||'').split(/\r?\n/u)){const text=line.trim();if(!text||/^(#|\/\/|＃)/u.test(text))continue;const match=text.match(/^(.*?)\s*(?:→|->)\s*(.*)$/u);if(match&&match[1].trim())entries.push([match[1].trim(),match[2].trim()])}return entries;
+}
+function applyCaptionDictionary(text,entries){for(const [from,to]of entries)text=text.split(from).join(to);return text}
+function collapseCaptionRepeats(text){
+ // Collapse adjacent phrase runs, including Japanese phrases without spaces.
+ return String(text).replace(/(.+?)(?:\s*\1){2,}/gu,'$1');
+}
+function filterCaptionChunks(chunks,frames,frameSeconds=.02){
+ const key=text=>String(text||'').replace(/[\p{P}\p{Z}\s]/gu,'').toLowerCase();
+ const counts=new Map();for(const c of chunks){const k=key(c.text);counts.set(k,(counts.get(k)||0)+1)}
+ const output=[];let lastKey='',run=0;
+ for(const chunk of chunks){const original=String(chunk.text||'').trim(),k=key(original);if(!/[\p{L}\p{N}]/u.test(original))continue;
+  const a=Math.max(0,Math.floor((chunk.timestamp?.[0]||0)/frameSeconds)),b=Math.min(frames.length,Math.ceil((chunk.timestamp?.[1]??frames.length*frameSeconds)/frameSeconds));
+  let energy=0;for(let i=a;i<b;i++)energy+=10**(frames[i]/10);const low=b>a&&10*Math.log10(Math.max(1e-12,energy/(b-a)))<-50;
+  const text=collapseCaptionRepeats(original);
+  const artifact=/^(?:ご視聴(?:どうも)?ありがとうございました|ご清聴ありがとうございました|チャンネル登録(?:を)?(?:よろしく)?(?:お願いします)?|字幕(?:提供|制作)?(?:[\s:：].*)?|音楽|拍手|無音|笑い|雑音|music|applause|silence|laughter|noise)[。.!！\s]*$/iu.test(text.replace(/[()（）\[\]【】]/gu,''));
+  if(artifact&&(low||counts.get(k)>1||text!==original))continue;
+  if(k===lastKey){run++;if(run===3)output.pop();if(run>=3)continue}else{lastKey=k;run=1}
+  output.push({...chunk,text});
+ }return output;
+}
+// ── 9b. Caption preferences and batch replacement ───────────────────
+function updateCaptionModelHint(){
+ const model=$('captionModel').value,size=model==='onnx-community/whisper-base'?'約80MB':model==='onnx-community/whisper-small'?'約250MB':'約1〜2GB（大容量）';
+ const message=`初回ダウンロード：${size}（実行環境により増える場合があります）。音声は端末内で処理します。`;
+ $('captionModelHint').textContent=message;$('captionModelSize').textContent=message+' 完了までこのタブを開いてください。';
+}
+function initializeCaptionPreferences(){
+ const gpu=!!globalThis.navigator?.gpu;$('captionTurbo').disabled=!gpu;$('captionGpuNote').textContent=gpu?'最高精度はGPUでのみ実行します。':'このブラウザーではGPUが使えないため選べません';
+ $('captionModel').value='onnx-community/whisper-small';
+ try{const model=localStorage.getItem('reel-caption-model');if(['onnx-community/whisper-base','onnx-community/whisper-small',...(gpu?['onnx-community/whisper-large-v3-turbo']:[])].includes(model))$('captionModel').value=model;$('captionDictionary').value=localStorage.getItem('reel-caption-dictionary')||''}catch{}
+ $('captionModel').onchange=()=>{try{localStorage.setItem('reel-caption-model',$('captionModel').value)}catch{}updateCaptionModelHint()};
+ $('captionDictionary').oninput=()=>{try{localStorage.setItem('reel-caption-dictionary',$('captionDictionary').value)}catch{}};updateCaptionModelHint();
+}
+function replaceAllCaptions(){
+ if(exportJob||captionJob||silenceJob)return;const from=$('captionSearch').value;if(!from){toast('検索する文字を入力してください');return}finishProperty();pause();let changed=0;
+ for(const clip of project.clips){if(!clip.caption)continue;const before=clip.text.content,after=before.split(from).join($('captionReplacement').value);if(before!==after){clip.text.content=after;changed++}}
+ if(changed){commit();refresh()}toast(`${changed} 件のキャプションを置換しました`);
+}
+function cleanCaption(text){return String(text||'').trim()}
 function meaningfulCaption(text){return /[\p{L}\p{N}]/u.test(text)}
 // Split oversized clauses into the fewest parts, balancing length and natural boundaries.
 function balancedCaptionParts(text,max){
@@ -399,7 +471,7 @@ function splitCaptionText(text,max){
  }
  return lines.filter(meaningfulCaption).map(text=>({text,weight:Array.from(text).length}));
 }
-function captionSegments(result,clip,max){const chunks=Array.isArray(result?.chunks)?result.chunks:[];const rows=[];let last='';for(const chunk of chunks){const text=cleanCaption(chunk.text),key=text.replace(/[\p{P}\p{Z}\s]/gu,'').toLowerCase();if(!meaningfulCaption(text)||key===last)continue;last=key;const stamp=chunk.timestamp||[],relativeStart=Number(stamp[0]),relativeEnd=stamp[1]==null?clip.duration*clip.speed:Number(stamp[1]);if(stamp[0]==null||!Number.isFinite(relativeStart)||!Number.isFinite(relativeEnd))continue;
+function captionSegments(result,clip,max,dictionary=[]){const chunks=Array.isArray(result?.chunks)?result.chunks:[];const rows=[];let last='';for(const chunk of chunks){const text=applyCaptionDictionary(cleanCaption(chunk.text),dictionary),key=text.replace(/[\p{P}\p{Z}\s]/gu,'').toLowerCase();if(!meaningfulCaption(text)||key===last)continue;last=key;const stamp=chunk.timestamp||[],relativeStart=Number(stamp[0]),relativeEnd=stamp[1]==null?clip.duration*clip.speed:Number(stamp[1]);if(stamp[0]==null||!Number.isFinite(relativeStart)||!Number.isFinite(relativeEnd))continue;
  // Whisper timestamps are relative to the sliced audio, so restore the source offset first.
  const srcStart=clip.inPoint+Math.max(0,relativeStart),srcEnd=clip.inPoint+Math.min(clip.duration*clip.speed,relativeEnd);
  const start=clip.start+(srcStart-clip.inPoint)/clip.speed,end=clip.start+(srcEnd-clip.inPoint)/clip.speed;if(end<=start)continue;
@@ -422,8 +494,10 @@ async function generateCaptions(){
  const sources=project.clips.filter(c=>(c.type==='video'&&c.track==='main')||(c.type==='audio'&&c.track==='audio')).map(clone).sort((a,b)=>a.start-b.start);
  if(!sources.length){$('captionError').textContent='音声を含む動画またはオーディオをタイムラインに追加してください。';return}
  if(project.clips.some(c=>c.caption)&&!confirm('既存のキャプションを置き換えますか？（通常のテキストは保持されます）'))return;
+ const dictionary=parseCaptionDictionary($('captionDictionary').value);
  const config={model:$('captionModel').value,language:$('captionLanguage').value,device:navigator.gpu?'webgpu':'wasm'},max=clamp(Math.floor(Number($('captionMax').value)||16),4,80),style=$('captionStyle').value;
- $('captionMax').value=max;const job={cancelled:false,worker:null,decoder:null,downloads:new Map(),skipped:0};captionJob=job;$('generateCaptions').disabled=true;$('captionModal').classList.remove('hidden');$('captionStage').textContent='音声を解析中';$('captionDetail').textContent='音声トラックのない素材や無音の素材はスキップします。';$('captionProgress').value=0;
+ if(config.model==='onnx-community/whisper-large-v3-turbo'&&!navigator.gpu){$('captionError').textContent='GPUを利用できません。「高精度」を選んでください。';return}
+ updateCaptionModelHint();$('captionMax').value=max;const job={cancelled:false,worker:null,decoder:null,downloads:new Map(),skipped:0};captionJob=job;$('generateCaptions').disabled=true;$('captionModal').classList.remove('hidden');$('captionStage').textContent='音声を解析中';$('captionDetail').textContent='音声トラックのない素材や無音の素材はスキップします。';$('captionProgress').value=0;
  const state={runner:null};job.state=state;const decoded=new Map();let first=null,samples=null;console.debug('[captions] generation start',config,sources.length);
  try{
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('このブラウザーは音声解析に対応していません');job.decoder=new AC();await job.decoder.resume();
@@ -431,7 +505,20 @@ async function generateCaptions(){
   let firstIndex=-1;for(let i=0;i<sources.length;i++){const samples=await captionSamples(sources[i],decoded,job);if(samples){first=samples;firstIndex=i;break}}
   assertCaptionJob(job);if(!first)throw new Error(job.decodeErrors?.length?job.decodeErrors.join('\n')+(job.silent?'\nほかの素材は無音でした。':''):'解析できる音声がありません。対象範囲が短すぎるか、すべての素材が無音です。');
   $('captionStage').textContent='モデルをダウンロード中 0%';state.runner=await createCaptionRunner(job,config,event=>captionInferenceProgress(job,event));assertCaptionJob(job);
-  const rows=[];for(let i=firstIndex;i<sources.length;i++){assertCaptionJob(job);$('captionStage').textContent=`音声を解析中 ${i+1}/${sources.length} クリップ`;samples=i===firstIndex?first:await captionSamples(sources[i],decoded,job);first=null;if(!samples)continue;assertCaptionJob(job);$('captionStage').textContent=`文字起こし中 ${i+1}/${sources.length} クリップ`;$('captionProgress').value=i/sources.length*100;const result=await transcribeCaptionClip(job,state,samples,config,i,sources.length,()=>captionSamples(sources[i],decoded,job));assertCaptionJob(job);rows.push(...captionSegments(result,sources[i],max));samples=null;const id=sources[i].mediaId;if(!sources.slice(i+1).some(c=>c.mediaId===id)){decoded.delete(id);if(!(assets.get(id)?.duration<60))decodedAudioCache.delete(id)}}
+  const rows=[];for(let i=firstIndex;i<sources.length;i++){
+   assertCaptionJob(job);$('captionStage').textContent=`音声を解析中 ${i+1}/${sources.length} クリップ`;
+   samples=i===firstIndex?first:await captionSamples(sources[i],decoded,job);first=null;if(!samples)continue;
+   const frames=captionFrameDb(samples),regions=captionSpeechRegions(frames,{duration:samples.length/16000});
+   const ranges=regions.length?regions:[[0,samples.length/16000]],chunks=[];
+   for(let n=0;n<ranges.length;n++){
+    assertCaptionJob(job);const [start,end]=ranges[n],begin=Math.round(start*16000),limit=Math.min(samples.length,Math.round(end*16000));
+    $('captionProgress').value=(i+n/ranges.length)/sources.length*100;
+    const result=await transcribeCaptionClip(job,state,samples.slice(begin,limit),config,n,ranges.length,()=>samples.slice(begin,limit));assertCaptionJob(job);
+    for(const chunk of result.chunks||[]){const stamp=chunk.timestamp||[];chunks.push({...chunk,timestamp:[stamp[0]==null?null:start+Math.max(0,Number(stamp[0])),start+Math.min(end-start,stamp[1]==null?end-start:Number(stamp[1]))]})}
+   }
+   rows.push(...captionSegments({chunks:filterCaptionChunks(chunks,frames)},sources[i],max,dictionary));samples=null;
+   const id=sources[i].mediaId;if(!sources.slice(i+1).some(c=>c.mediaId===id)){decoded.delete(id);if(!(assets.get(id)?.duration<60))decodedAudioCache.delete(id)}
+  }
   const retained=project.clips.filter(c=>!c.caption),captions=buildCaptionClips(rows,style,retained,max);if(!captions.length)throw new Error('発話を検出できませんでした。音声や言語設定を確認してください。既存のキャプションは保持されています。');
   assertCaptionJob(job);project.clips=[...retained,...captions];selected=captions[0].id;commit();console.debug('[captions] clips committed',captions.length);toast(`${captions.length} 件のキャプションを生成しました${job.skipped?'（音声なし等 '+job.skipped+' 件をスキップ）':''}`);
  }catch(error){console.debug('[captions] generation error',error);if(!job.cancelled){$('captionError').textContent='キャプションを生成できませんでした。ネット接続、モデル取得、音声形式、ブラウザーの対応状況を確認してください。\n'+String(error?.message||error);toast('キャプション生成に失敗しました。左パネルの詳細を確認してください。')}}
@@ -615,6 +702,7 @@ $('export').onclick=openExport;$('startExport').onclick=startExport;$('cancelExp
 document.addEventListener('keydown',e=>{if(silenceJob){if(e.key==='Escape')cancelSilenceDetection();e.preventDefault();return}if(captionJob){if(e.key==='Escape')cancelCaptionGeneration();e.preventDefault();return}const editing=e.target.closest('input,textarea,select,[contenteditable]');if(editing)return;if(exportJob){if(e.key==='Escape')finishExport(true);return}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();finishProperty();restore(historyIndex+(e.shiftKey?1:-1))}else if(e.code==='Space'){e.preventDefault();playing?pause():play()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){$('exportModal').classList.add('hidden');selectClip(null)}});
 window.addEventListener('dragover',e=>e.preventDefault());window.addEventListener('drop',e=>e.preventDefault());window.addEventListener('resize',renderTimeline);window.addEventListener('beforeunload',()=>{captionJob?.worker?.terminate();for(const p of players.values())destroyPlayer(p);for(const a of assets.values())releaseAsset(a)});
 $('detectSilence').onclick=detectSilence;$('applySilence').onclick=applySilence;$('cancelSilence').onclick=cancelSilenceDetection;for(const id of ['silenceThreshold','silenceMinimum','silencePadding','silenceAuto'])$(id).oninput=updateSilenceControls;
+initializeCaptionPreferences();$('replaceCaptions').onclick=replaceAllCaptions;
 $('generateCaptions').onclick=generateCaptions;$('cancelCaptions').onclick=cancelCaptionGeneration;
 const previewObserver=new ResizeObserver(fitPreview);previewObserver.observe(canvas.parentElement);
 setCanvasSize(720);renderLibrary();refresh();requestAnimationFrame(frame);
